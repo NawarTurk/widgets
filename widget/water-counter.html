@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Counter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page-bg:#f7f6f3;--bg:#ffffff;--bg2:#f1efe8;--border:rgba(55,53,47,0.09);
+    --t1:#2f2c27;--t2:#6b665c;--t3:#9b968b;
+    --accent:#6bb7ff;--accent-2:#d9ecff;--accent-soft:rgba(107,183,255,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--page-bg)}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .widget-grid{max-width:860px;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .widget-shell{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:18px 16px;box-shadow:0 10px 30px rgba(15,15,15,0.04)}
+  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
+  .widget-sub{font-size:11px;line-height:1.45;color:var(--t2);max-width:34ch}
+  .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
+  .theme-btn{border:none;background:transparent;color:var(--t2);font:inherit;font-size:10px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .theme-btn.active{background:var(--bg);color:var(--t1);box-shadow:0 1px 2px rgba(15,15,15,0.08)}
+  .copy-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
+  .copy-btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--bg2) 80%, var(--accent) 20%)}
+  .copy-btn:active{transform:scale(.98)}
+  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .embed-mode .page-tools{display:none}
+  .embed-mode .widget-grid{max-width:none}
+  .water-card{display:flex;flex-direction:column;gap:16px;padding:2px 0 4px}
+  .water-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+  .water-kicker{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+  .water-goal{font-family:'DM Mono',monospace;font-size:12px;color:var(--t2)}
+  .water-stage{display:grid;grid-template-columns:minmax(0,1fr) 70px;align-items:center;gap:16px}
+  .cup-wrap{display:flex;align-items:flex-end;gap:14px;min-width:0}
+  .cup{position:relative;width:112px;height:150px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-top:none;border-radius:0 0 28px 28px;background:linear-gradient(180deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08));overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.22)}
+  .cup::before{content:'';position:absolute;top:-14px;left:12px;right:12px;height:16px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-bottom:none;border-radius:18px 18px 0 0;background:rgba(255,255,255,0.28)}
+  .cup::after{content:'';position:absolute;top:40px;right:-18px;width:24px;height:48px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-left:none;border-radius:0 18px 18px 0;opacity:.9}
+  .cup-water{position:absolute;left:0;right:0;bottom:0;height:var(--fill,0%);background:linear-gradient(180deg,#97d5ff 0%,#6bb7ff 45%,#4597ee 100%);transition:height .28s ease}
+  .cup-water::before{content:'';position:absolute;top:-9px;left:-2px;right:-2px;height:16px;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,0.62) 0 18%,transparent 19%),linear-gradient(180deg,#c8e8ff,#84c9ff);border-radius:50%}
+  .water-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .water-count{font-family:'DM Mono',monospace;font-size:42px;line-height:1;color:var(--t1)}
+  .water-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .water-note{font-size:13px;line-height:1.45;color:var(--t2)}
+  .water-note strong{color:var(--t1);font-weight:600}
+  .water-controls{display:flex;flex-direction:column;gap:10px}
+  .water-btn{height:52px;border-radius:18px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg2),color-mix(in srgb,var(--accent-soft) 75%, var(--bg2) 25%));color:var(--t1);font-size:28px;line-height:1;cursor:pointer;transition:transform .1s,border-color .2s,background .2s}
+  .water-btn:hover{border-color:var(--accent);background:var(--accent-2)}
+  .water-btn:active{transform:scale(.97)}
+  .water-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .water-progress{font-size:11px;color:var(--t2)}
+  .reset-btn{background:none;border:none;color:var(--t3);font:inherit;font-size:10px;cursor:pointer}
+  .reset-btn:hover{color:var(--t1)}
+  @media (max-width:640px){
+    body{padding:10px}
+    .widget-shell{padding:14px 12px}
+    .page-tools{flex-direction:column;align-items:stretch}
+    .widget-actions{justify-content:space-between}
+    .copy-status{text-align:left}
+    .water-header{align-items:flex-start;flex-direction:column}
+    .water-stage{grid-template-columns:minmax(0,1fr) 56px;gap:10px}
+    .cup-wrap{gap:10px}
+    .water-controls{gap:8px}
+    .cup{width:96px;height:136px}
+    .water-count{font-size:36px}
+    .water-note{font-size:12px}
+  }
+</style>
+</head>
+<body>
+<main class="widget-grid">
+  <div class="page-tools">
+    <div class="widget-meta">
+      <h1 class="widget-title">Water Counter</h1>
+      <p class="widget-sub">Track your glasses of water with a filling cup. A common daily target is around 8 cups.</p>
+    </div>
+    <div class="widget-actions">
+      <div class="theme-toggle" id="themeToggle">
+        <button class="theme-btn" type="button" data-theme="light">light</button>
+        <button class="theme-btn" type="button" data-theme="dark">dark</button>
+      </div>
+      <button class="copy-btn" id="copyBtn">copy widget link</button>
+      <span class="copy-status" id="copyStatus"></span>
+    </div>
+  </div>
+  <section class="widget-shell">
+    <div class="water-card">
+      <div class="water-header">
+        <div>
+          <div class="water-kicker">Hydration today</div>
+          <div class="water-goal">recommended goal: 8 cups</div>
+        </div>
+      </div>
+      <div class="water-stage">
+        <div class="cup-wrap">
+          <div class="cup" aria-hidden="true">
+            <div class="cup-water" id="cupWater"></div>
+          </div>
+          <div class="water-copy">
+            <div class="water-count" id="countValue">0</div>
+            <div class="water-label">cups</div>
+            <p class="water-note" id="waterNote">Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.</p>
+          </div>
+        </div>
+        <div class="water-controls">
+          <button class="water-btn" id="plusBtn" aria-label="Increase water count">+</button>
+          <button class="water-btn" id="minusBtn" aria-label="Decrease water count">-</button>
+        </div>
+      </div>
+      <div class="water-actions">
+        <div class="water-progress" id="waterProgress">0 of 8 cups</div>
+        <button class="reset-btn" id="resetBtn">reset</button>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+var STORAGE_KEY='water_counter_value';
+var GOAL_CUPS=8;
+var SELECTED_THEME='light';
+var THEMES={
+  light:{pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#6bb7ff',accent2:'#d9ecff',accentSoft:'rgba(107,183,255,0.08)'},
+  dark:{pageBg:'#191919',bg:'#191919',bg2:'#242424',border:'rgba(255,255,255,0.09)',t1:'#e9e9e7',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#6bb7ff',accent2:'rgba(107,183,255,0.18)',accentSoft:'rgba(107,183,255,0.12)'}
+};
+function css(name,value){document.documentElement.style.setProperty(name,value)}
+function themeChoice(){
+  var q=new URLSearchParams(window.location.search).get('theme');
+  if(q==='light'||q==='dark')return q;
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function syncThemeButtons(){
+  document.querySelectorAll('.theme-btn').forEach(function(btn){
+    btn.classList.toggle('active',btn.dataset.theme===SELECTED_THEME);
+  });
+}
+function setThemeQuery(theme){
+  var params=new URLSearchParams(window.location.search);
+  params.set('theme',theme);
+  var query=params.toString();
+  history.replaceState(null,'',window.location.pathname+(query?'?'+query:''));
+}
+function applyTheme(theme){
+  var active=THEMES[theme||themeChoice()]||THEMES.light;
+  SELECTED_THEME=theme||themeChoice();
+  css('--page-bg',active.pageBg);
+  css('--bg',active.bg);
+  css('--bg2',active.bg2);
+  css('--border',active.border);
+  css('--t1',active.t1);
+  css('--t2',active.t2);
+  css('--t3',active.t3);
+  css('--accent',active.accent);
+  css('--accent-2',active.accent2);
+  css('--accent-soft',active.accentSoft);
+  syncThemeButtons();
+}
+function isEmbedMode(){
+  var q=new URLSearchParams(window.location.search).get('embed');
+  if(q==='1'||q==='true')return true;
+  try{return window.self!==window.top;}catch(e){return true;}
+}
+function applyEmbedMode(){
+  if(isEmbedMode())document.body.classList.add('embed-mode');
+}
+function copyStatus(msg){
+  var el=document.getElementById('copyStatus');
+  el.textContent=msg;
+  window.clearTimeout(copyStatus.t);
+  copyStatus.t=window.setTimeout(function(){el.textContent='';},1800);
+}
+function currentWidgetUrl(){
+  var params=new URLSearchParams(window.location.search);
+  params.set('embed','1');
+  params.set('theme',SELECTED_THEME);
+  var query=params.toString();
+  return window.location.origin+window.location.pathname+(query?'?'+query:'');
+}
+function copyLink(){
+  var text=currentWidgetUrl();
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(function(){copyStatus('widget link copied');},function(){copyStatus('copy failed');});
+    return;
+  }
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.setAttribute('readonly','');
+  ta.style.position='absolute';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand('copy');copyStatus('widget link copied');}
+  catch(e){copyStatus('copy failed');}
+  document.body.removeChild(ta);
+}
+function getCount(){
+  var raw=localStorage.getItem(STORAGE_KEY);
+  var value=raw?parseInt(raw,10):0;
+  return Number.isFinite(value)&&value>0?value:0;
+}
+function setCount(value){
+  localStorage.setItem(STORAGE_KEY,String(value));
+}
+function renderCount(value){
+  document.getElementById('countValue').textContent=String(value);
+  var fill=Math.min(value/GOAL_CUPS,1)*100;
+  document.getElementById('cupWater').style.setProperty('--fill',fill+'%');
+  document.getElementById('waterProgress').textContent=value+' of '+GOAL_CUPS+' cups';
+  var note='Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.';
+  if(value===0){
+    note='Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.';
+  }else if(value<GOAL_CUPS){
+    note='You are at <strong>'+value+' cups</strong>. '+(GOAL_CUPS-value)+' more to hit the usual daily goal.';
+  }else if(value===GOAL_CUPS){
+    note='You hit <strong>8 cups</strong> today. Nice work keeping your hydration steady.';
+  }else{
+    note='You are at <strong>'+value+' cups</strong>. The cup is full and you are already past the daily benchmark.';
+  }
+  document.getElementById('waterNote').innerHTML=note;
+}
+var count=getCount();
+document.getElementById('copyBtn').onclick=copyLink;
+document.querySelectorAll('.theme-btn').forEach(function(btn){
+  btn.onclick=function(){
+    SELECTED_THEME=btn.dataset.theme;
+    setThemeQuery(SELECTED_THEME);
+    applyTheme(SELECTED_THEME);
+  };
+});
+document.getElementById('plusBtn').onclick=function(){count+=1;setCount(count);renderCount(count)};
+document.getElementById('minusBtn').onclick=function(){count=Math.max(0,count-1);setCount(count);renderCount(count)};
+document.getElementById('resetBtn').onclick=function(){count=0;setCount(count);renderCount(count)};
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(!new URLSearchParams(window.location.search).get('theme'))applyTheme()});
+}
+applyEmbedMode();
+applyTheme();
+renderCount(count);
+</script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quote Of The Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page-bg:#f7f6f3;--bg:#fffdfa;--bg2:#f1eee7;--border:rgba(55,53,47,0.09);
+    --t1:#2f2c27;--t2:#6b665c;--t3:#9b968b;
+    --accent:#caef72;--accent-2:#eef8cb;--glow:rgba(202,239,114,0.24);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--page-bg)}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .widget-grid{max-width:860px;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .widget-shell{position:relative;background:linear-gradient(180deg,var(--bg),rgba(255,255,255,0.78));border:1px solid var(--border);border-radius:22px;padding:18px 16px;box-shadow:0 18px 40px rgba(15,15,15,0.05);overflow:hidden}
+  .widget-shell::before{content:'';position:absolute;inset:auto -20% -20% auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);pointer-events:none}
+  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
+  .widget-sub{font-size:11px;line-height:1.4;color:var(--t2)}
+  .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
+  .theme-btn{border:none;background:transparent;color:var(--t2);font:inherit;font-size:10px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .theme-btn.active{background:var(--bg);color:var(--t1);box-shadow:0 1px 2px rgba(15,15,15,0.08)}
+  .copy-btn,.next-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
+  .copy-btn:hover,.next-btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--bg2) 76%, var(--accent) 24%)}
+  .copy-btn:active,.next-btn:active{transform:scale(.98)}
+  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .embed-mode .page-tools{display:none}
+  .embed-mode .widget-grid{max-width:none}
+  .quote-card{display:flex;flex-direction:column;gap:18px;position:relative;z-index:1}
+  .quote-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .quote-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .quote-mark{font-family:'Cormorant Garamond',serif;font-size:88px;line-height:.8;color:var(--accent);margin-top:-8px}
+  .quote-text{font-family:'Cormorant Garamond',serif;font-size:34px;line-height:1.02;letter-spacing:-.02em;max-width:12ch;color:var(--t1)}
+  .quote-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .quote-author{display:flex;flex-direction:column;gap:3px}
+  .quote-author strong{font-size:12px;font-weight:600;color:var(--t1)}
+  .quote-author span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+  .quote-actions{margin-left:auto;display:flex;align-items:flex-end}
+  .next-btn.small{font-size:10px;padding:5px 9px;opacity:.9}
+  @media (max-width:640px){
+    body{padding:10px}
+    .page-tools{flex-direction:column;align-items:stretch}
+    .widget-actions{justify-content:space-between}
+    .copy-status{text-align:left}
+    .quote-text{font-size:28px;max-width:none}
+    .quote-mark{font-size:72px}
+    .quote-footer{align-items:flex-end}
+  }
+</style>
+</head>
+<body>
+<main class="widget-grid">
+  <div class="page-tools">
+    <div class="widget-meta">
+      <h1 class="widget-title">Trust The Process</h1>
+      <p class="widget-sub">A calm motivational quote widget built around one theme: trust the process.</p>
+    </div>
+    <div class="widget-actions">
+      <div class="theme-toggle">
+        <button class="theme-btn" type="button" data-theme="light">light</button>
+        <button class="theme-btn" type="button" data-theme="dark">dark</button>
+      </div>
+      <button class="copy-btn" id="copyBtn">copy widget link</button>
+      <span class="copy-status" id="copyStatus"></span>
+    </div>
+  </div>
+  <section class="widget-shell">
+    <div class="quote-card">
+      <div class="quote-top">
+        <div class="quote-label">Trust The Process</div>
+        <div class="quote-mark">“</div>
+      </div>
+      <div class="quote-text" id="quoteText">Loading quote...</div>
+      <div class="quote-footer">
+        <div class="quote-author">
+          <strong id="quoteAuthor">Trust The Process</strong>
+          <span>daily focus</span>
+        </div>
+        <div class="quote-actions">
+          <button class="next-btn small" id="nextBtn" type="button">next quote</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+var QUOTES_FALLBACK=[
+  {id:1,text:'Progress feels slow when you are inside it, but patience turns small repeats into visible change.',author:'Trust The Process'},
+  {id:2,text:'You do not need a dramatic breakthrough today; you need another honest step.',author:'Trust The Process'},
+  {id:3,text:'Consistency is quiet work that becomes loud results later.',author:'Trust The Process'},
+  {id:4,text:'The version of you that you want is built in ordinary moments, not only in big ones.',author:'Trust The Process'},
+  {id:5,text:'Keep showing up long enough for your effort to recognize itself as momentum.',author:'Trust The Process'},
+  {id:6,text:'Discipline is trusting that today\'s small action matters before the proof arrives.',author:'Trust The Process'},
+  {id:7,text:'Not every day will feel powerful, but every day can still move you forward.',author:'Trust The Process'},
+  {id:8,text:'Growth often looks like repetition right before it looks like progress.',author:'Trust The Process'},
+  {id:9,text:'Let the process be stronger than your mood.',author:'Trust The Process'},
+  {id:10,text:'The habit you protect today becomes the strength you rely on tomorrow.',author:'Trust The Process'}
+];
+var SELECTED_THEME='light';
+var quoteIndex=0;
+var quotes=QUOTES_FALLBACK.slice();
+var THEMES={
+  light:{pageBg:'#f7f6f3',bg:'#fffdfa',bg2:'#f1eee7',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#caef72',accent2:'#eef8cb',glow:'rgba(202,239,114,0.24)'},
+  dark:{pageBg:'#191919',bg:'#1d1d1b',bg2:'#272725',border:'rgba(255,255,255,0.10)',t1:'#ecece8',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#caef72',accent2:'rgba(202,239,114,0.14)',glow:'rgba(202,239,114,0.10)'}
+};
+function css(name,value){document.documentElement.style.setProperty(name,value)}
+function themeChoice(){
+  var q=new URLSearchParams(window.location.search).get('theme');
+  if(q==='light'||q==='dark')return q;
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function syncThemeButtons(){
+  document.querySelectorAll('.theme-btn').forEach(function(btn){btn.classList.toggle('active',btn.dataset.theme===SELECTED_THEME);});
+}
+function setThemeQuery(theme){
+  var params=new URLSearchParams(window.location.search);
+  params.set('theme',theme);
+  var query=params.toString();
+  history.replaceState(null,'',window.location.pathname+(query?'?'+query:''));
+}
+function applyTheme(theme){
+  var active=THEMES[theme||themeChoice()]||THEMES.light;
+  SELECTED_THEME=theme||themeChoice();
+  css('--page-bg',active.pageBg);
+  css('--bg',active.bg);
+  css('--bg2',active.bg2);
+  css('--border',active.border);
+  css('--t1',active.t1);
+  css('--t2',active.t2);
+  css('--t3',active.t3);
+  css('--accent',active.accent);
+  css('--accent-2',active.accent2);
+  css('--glow',active.glow);
+  syncThemeButtons();
+}
+function isEmbedMode(){
+  var q=new URLSearchParams(window.location.search).get('embed');
+  if(q==='1'||q==='true')return true;
+  try{return window.self!==window.top;}catch(e){return true;}
+}
+function applyEmbedMode(){
+  if(isEmbedMode())document.body.classList.add('embed-mode');
+}
+function copyStatus(msg){
+  var el=document.getElementById('copyStatus');
+  el.textContent=msg;
+  window.clearTimeout(copyStatus.t);
+  copyStatus.t=window.setTimeout(function(){el.textContent='';},1800);
+}
+function currentWidgetUrl(){
+  var params=new URLSearchParams(window.location.search);
+  params.set('embed','1');
+  params.set('theme',SELECTED_THEME);
+  var query=params.toString();
+  return window.location.origin+window.location.pathname+(query?'?'+query:'');
+}
+function copyLink(){
+  var text=currentWidgetUrl();
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(function(){copyStatus('widget link copied');},function(){copyStatus('copy failed');});
+    return;
+  }
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.setAttribute('readonly','');
+  ta.style.position='absolute';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand('copy');copyStatus('widget link copied');}
+  catch(e){copyStatus('copy failed');}
+  document.body.removeChild(ta);
+}
+function dailyIndex(size){
+  var now=new Date();
+  var day=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+  return size?day%size:0;
+}
+function renderQuote(){
+  var quote=quotes[quoteIndex]||QUOTES_FALLBACK[0];
+  document.getElementById('quoteText').textContent=quote.text;
+  document.getElementById('quoteAuthor').textContent=quote.author||'Trust The Process';
+}
+function nextQuote(){
+  quoteIndex=(quoteIndex+1)%quotes.length;
+  renderQuote();
+}
+function loadQuotes(){
+  return fetch('./data/trust-process-quotes.json').then(function(res){
+    if(!res.ok)throw new Error('Failed to load quotes');
+    return res.json();
+  }).then(function(data){
+    if(Array.isArray(data)&&data.length)quotes=data;
+  }).catch(function(){
+    quotes=QUOTES_FALLBACK.slice();
+  }).finally(function(){
+    quoteIndex=dailyIndex(quotes.length);
+    renderQuote();
+  });
+}
+document.getElementById('copyBtn').onclick=copyLink;
+document.getElementById('nextBtn').onclick=nextQuote;
+document.querySelectorAll('.theme-btn').forEach(function(btn){
+  btn.onclick=function(){
+    SELECTED_THEME=btn.dataset.theme;
+    setThemeQuery(SELECTED_THEME);
+    applyTheme(SELECTED_THEME);
+  };
+});
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(!new URLSearchParams(window.location.search).get('theme'))applyTheme();});
+}
+applyEmbedMode();
+applyTheme();
+loadQuotes();
+</script>
+</body>
+</html>

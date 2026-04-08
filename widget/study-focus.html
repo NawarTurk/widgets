@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Focus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page-bg:#f7f6f3;--bg:#fffdfa;--bg2:#f1eee7;--border:rgba(55,53,47,0.09);
+    --t1:#2f2c27;--t2:#6b665c;--t3:#9b968b;
+    --accent:#8cb6ff;--accent-2:#dbe8ff;--accent-soft:rgba(140,182,255,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--page-bg)}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .widget-grid{max-width:860px;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .widget-shell{background:linear-gradient(180deg,var(--bg),rgba(255,255,255,0.82));border:1px solid var(--border);border-radius:22px;padding:18px 16px;box-shadow:0 18px 40px rgba(15,15,15,0.05)}
+  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
+  .widget-sub{font-size:11px;line-height:1.4;color:var(--t2)}
+  .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
+  .theme-btn{border:none;background:transparent;color:var(--t2);font:inherit;font-size:10px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .theme-btn.active{background:var(--bg);color:var(--t1);box-shadow:0 1px 2px rgba(15,15,15,0.08)}
+  .copy-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
+  .copy-btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--bg2) 76%, var(--accent) 24%)}
+  .copy-btn:active{transform:scale(.98)}
+  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .embed-mode .page-tools{display:none}
+  .embed-mode .widget-grid{max-width:none}
+  .study-card{display:flex;flex-direction:column;gap:12px}
+  .chip-row{display:flex;justify-content:center;align-items:center;align-content:center;gap:8px;flex-wrap:wrap;width:fit-content;max-width:100%;margin:0 auto}
+  .chip{border:1px solid var(--border);background:var(--bg2);color:var(--t2);font:inherit;font-size:11px;padding:6px 10px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+  .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .custom-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .custom-input{width:78px;border:1px solid var(--border);background:var(--bg);color:var(--t1);font:inherit;font-size:12px;padding:6px 10px;border-radius:999px;outline:none;flex:0 0 auto}
+  .custom-input:focus{border-color:var(--accent)}
+  .timer-panel{display:grid;grid-template-columns:minmax(180px,0.9fr) minmax(220px,1.1fr);gap:12px;align-items:stretch}
+  .timer-core{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(180deg,var(--bg2),var(--accent-soft));min-height:210px;text-align:center}
+  .timer-label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .timer-value{font-family:'DM Mono',monospace;font-size:38px;line-height:1;font-weight:500;color:var(--t1)}
+  .timer-state{font-size:12px;color:var(--t2)}
+  .control-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+  .control-btn{border:1px solid var(--border);background:var(--bg);color:var(--t1);font:inherit;font-size:11px;padding:8px 12px;border-radius:999px;cursor:pointer;transition:transform .1s,border-color .2s,background .2s}
+  .control-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .control-btn:hover{border-color:var(--accent)}
+  .control-btn:active{transform:scale(.98)}
+  .music-box{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--border);border-radius:18px;background:var(--bg);min-height:210px}
+  .music-box strong{font-size:12px;color:var(--t1)}
+  .music-box span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+  .music-frame{width:100%;height:154px;border:0;border-radius:14px;background:#111}
+  .music-link{font-size:11px;color:var(--t2);text-decoration:none}
+  .music-link:hover{color:var(--t1)}
+  @media (max-width:520px){
+    body{padding:10px}
+    .page-tools{flex-direction:column;align-items:stretch}
+    .widget-actions{justify-content:space-between}
+    .copy-status{text-align:left}
+    .timer-panel{grid-template-columns:1fr}
+    .timer-value{font-size:36px}
+  }
+</style>
+</head>
+<body>
+<main class="widget-grid">
+  <div class="page-tools">
+    <div class="widget-meta">
+      <h1 class="widget-title">Study Focus</h1>
+      <p class="widget-sub">A minimal split focus timer with editable minutes and built-in lo-fi music.</p>
+    </div>
+    <div class="widget-actions">
+      <div class="theme-toggle">
+        <button class="theme-btn" type="button" data-theme="light">light</button>
+        <button class="theme-btn" type="button" data-theme="dark">dark</button>
+      </div>
+      <button class="copy-btn" id="copyBtn">copy widget link</button>
+      <span class="copy-status" id="copyStatus"></span>
+    </div>
+  </div>
+  <section class="widget-shell">
+    <div class="study-card">
+      <div class="chip-row">
+        <button class="chip active" type="button" data-minutes="30">30 min</button>
+        <button class="chip" type="button" data-minutes="60">60 min</button>
+        <button class="chip" type="button" data-minutes="90">90 min</button>
+        <input class="custom-input" id="customMinutes" type="number" min="1" max="240" step="1" value="30" placeholder="min" aria-label="Custom minutes">
+      </div>
+      <div class="timer-panel">
+        <div class="timer-core">
+          <div class="timer-label">Study Focus Countdown</div>
+          <div class="timer-value" id="timerValue">30:00</div>
+          <div class="timer-state" id="timerState">ready to focus</div>
+          <div class="control-row">
+            <button class="control-btn primary" id="startBtn" type="button">start</button>
+            <button class="control-btn" id="pauseBtn" type="button">pause</button>
+            <button class="control-btn" id="resetBtn" type="button">reset</button>
+          </div>
+        </div>
+        <div class="music-box">
+          <span>Lofi stream</span>
+          <strong>Study music</strong>
+          <iframe class="music-frame" src="https://www.youtube.com/embed/HuFYqnbVbzY" title="Lofi study music" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <a class="music-link" href="https://www.youtube.com/watch?v=HuFYqnbVbzY" target="_blank" rel="noreferrer">open in YouTube</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+var STORAGE_KEY='study_focus_preset';
+var SELECTED_THEME='light';
+var remainingSeconds=30*60;
+var selectedMinutes=30;
+var timerId=null;
+var THEMES={
+  light:{pageBg:'#f7f6f3',bg:'#fffdfa',bg2:'#f1eee7',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#8cb6ff',accent2:'#dbe8ff',accentSoft:'rgba(140,182,255,0.12)'},
+  dark:{pageBg:'#191919',bg:'#1d1d1b',bg2:'#272725',border:'rgba(255,255,255,0.10)',t1:'#ecece8',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#8cb6ff',accent2:'rgba(140,182,255,0.18)',accentSoft:'rgba(140,182,255,0.14)'}
+};
+function css(name,value){document.documentElement.style.setProperty(name,value)}
+function themeChoice(){
+  var q=new URLSearchParams(window.location.search).get('theme');
+  if(q==='light'||q==='dark')return q;
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function syncThemeButtons(){document.querySelectorAll('.theme-btn').forEach(function(btn){btn.classList.toggle('active',btn.dataset.theme===SELECTED_THEME);});}
+function setThemeQuery(theme){
+  var params=new URLSearchParams(window.location.search);
+  params.set('theme',theme);
+  var query=params.toString();
+  history.replaceState(null,'',window.location.pathname+(query?'?'+query:''));
+}
+function applyTheme(theme){
+  var active=THEMES[theme||themeChoice()]||THEMES.light;
+  SELECTED_THEME=theme||themeChoice();
+  css('--page-bg',active.pageBg);css('--bg',active.bg);css('--bg2',active.bg2);css('--border',active.border);css('--t1',active.t1);css('--t2',active.t2);css('--t3',active.t3);css('--accent',active.accent);css('--accent-2',active.accent2);css('--accent-soft',active.accentSoft);
+  syncThemeButtons();
+}
+function isEmbedMode(){
+  var q=new URLSearchParams(window.location.search).get('embed');
+  if(q==='1'||q==='true')return true;
+  try{return window.self!==window.top;}catch(e){return true;}
+}
+function applyEmbedMode(){if(isEmbedMode())document.body.classList.add('embed-mode');}
+function copyStatus(msg){var el=document.getElementById('copyStatus');el.textContent=msg;window.clearTimeout(copyStatus.t);copyStatus.t=window.setTimeout(function(){el.textContent='';},1800);}
+function currentWidgetUrl(){var params=new URLSearchParams(window.location.search);params.set('embed','1');params.set('theme',SELECTED_THEME);var query=params.toString();return window.location.origin+window.location.pathname+(query?'?'+query:'');}
+function copyLink(){var text=currentWidgetUrl();if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(function(){copyStatus('widget link copied');},function(){copyStatus('copy failed');});return;}var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');copyStatus('widget link copied');}catch(e){copyStatus('copy failed');}document.body.removeChild(ta);}
+function formatTime(total){var mins=Math.floor(total/60);var secs=total%60;return String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');}
+function renderTime(){document.getElementById('timerValue').textContent=formatTime(remainingSeconds);}
+function setState(text){document.getElementById('timerState').textContent=text;}
+function stopTimer(){if(timerId!==null){window.clearInterval(timerId);timerId=null;}}
+function savePreset(){localStorage.setItem(STORAGE_KEY,String(selectedMinutes));}
+function syncPresetButtons(){document.querySelectorAll('.chip[data-minutes]').forEach(function(btn){btn.classList.toggle('active',Number(btn.dataset.minutes)===selectedMinutes);});}
+function syncCustomInput(){document.getElementById('customMinutes').value=String(selectedMinutes);}
+function setPreset(minutes){selectedMinutes=minutes;remainingSeconds=minutes*60;savePreset();syncPresetButtons();syncCustomInput();renderTime();setState('ready to focus');}
+function loadPreset(){var raw=parseInt(localStorage.getItem(STORAGE_KEY)||'30',10);selectedMinutes=Number.isFinite(raw)&&raw>0?raw:30;remainingSeconds=selectedMinutes*60;}
+function startTimer(){if(timerId!==null)return;setState('study session running');timerId=window.setInterval(function(){if(remainingSeconds<=0){stopTimer();setState('session complete');return;}remainingSeconds-=1;renderTime();if(remainingSeconds===0){stopTimer();setState('session complete');}},1000);}
+function pauseTimer(){if(timerId===null)return;stopTimer();setState('paused');}
+function resetTimer(){stopTimer();remainingSeconds=selectedMinutes*60;renderTime();setState('ready to focus');}
+document.getElementById('copyBtn').onclick=copyLink;
+document.querySelectorAll('.theme-btn').forEach(function(btn){btn.onclick=function(){SELECTED_THEME=btn.dataset.theme;setThemeQuery(SELECTED_THEME);applyTheme(SELECTED_THEME);};});
+document.querySelectorAll('.chip[data-minutes]').forEach(function(btn){btn.onclick=function(){stopTimer();setPreset(Number(btn.dataset.minutes));};});
+function applyCustomMinutes(){
+  var value=parseInt(document.getElementById('customMinutes').value,10);
+  if(!Number.isFinite(value)||value<1)return;
+  stopTimer();
+  setPreset(Math.min(value,240));
+}
+document.getElementById('customMinutes').addEventListener('change',applyCustomMinutes);
+document.getElementById('customMinutes').addEventListener('keydown',function(event){if(event.key==='Enter')applyCustomMinutes();});
+document.getElementById('startBtn').onclick=startTimer;
+document.getElementById('pauseBtn').onclick=pauseTimer;
+document.getElementById('resetBtn').onclick=resetTimer;
+if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(!new URLSearchParams(window.location.search).get('theme'))applyTheme();});}
+applyEmbedMode();
+loadPreset();
+syncPresetButtons();
+syncCustomInput();
+applyTheme();
+renderTime();
+setState('ready to focus');
+</script>
+</body>
+</html>
