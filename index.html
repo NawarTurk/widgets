@@ -8,16 +8,33 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#111110;--bg2:#1a1a18;--border:rgba(255,255,255,0.08);
-    --t1:#e8e6df;--t2:#9c9a91;--t3:#5f5e58;
+    --page-bg:#f7f6f3;--bg:#ffffff;--bg2:#f1efe8;--border:rgba(55,53,47,0.09);
+    --t1:#2f2c27;--t2:#6b665c;--t3:#9b968b;
     --green:#5fa620;--green-b:#3d7010;
     --red:#d94040;--red-b:#8b2020;
-    --neu:#2a2a27;--neu-b:rgba(255,255,255,0.12);
+    --neu:#ece8df;--neu-b:rgba(55,53,47,0.12);
     --accent:#c8f06a;
     --chart-h:120px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);padding:10px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  html{background:var(--page-bg)}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  .widget-grid{max-width:860px;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .widget-shell{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:14px 14px 12px;box-shadow:0 10px 30px rgba(15,15,15,0.04)}
+  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .widget-kicker{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+  .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
+  .widget-sub{font-size:11px;line-height:1.4;color:var(--t2)}
+  .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .copy-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
+  .copy-btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--bg2) 78%, var(--accent) 22%)}
+  .copy-btn:active{transform:scale(.98)}
+  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .widget-body{display:flex;flex-direction:column;gap:0}
+  .embed-mode .page-tools{display:none}
+  .embed-mode .widget-grid{max-width:none}
 
   .chart-box{position:relative;height:var(--chart-h);margin-bottom:0;overflow:visible}
   .chart-box svg{position:absolute;top:0;left:0;width:100%;height:100%}
@@ -49,22 +66,48 @@
   .add-btn:hover{border-color:var(--accent);color:var(--accent)}
   .clear-btn{background:none;border:none;color:var(--t3);font-family:inherit;font-size:8px;cursor:pointer;padding:4px;text-align:center;grid-column:9;opacity:0.5}
   .clear-btn:hover{color:var(--red);opacity:1}
+
+  @media (max-width:640px){
+    body{padding:10px}
+    .widget-shell{padding:12px 10px 10px;border-radius:14px}
+    .page-tools{flex-direction:column;align-items:stretch}
+    .widget-actions{justify-content:space-between}
+    .copy-status{text-align:left}
+  }
 </style>
 </head>
 <body>
 
-<div class="chart-box" id="chartBox">
-  <svg id="chartSvg"></svg>
-</div>
+<main class="widget-grid">
+  <div class="page-tools">
+    <div class="widget-meta">
+      <div class="widget-kicker">Widget 01</div>
+      <h1 class="widget-title">Trust The Process</h1>
+      <p class="widget-sub">Habit tracker card with a shareable link. This header stays outside the widget and hides automatically in embeds.</p>
+    </div>
+    <div class="widget-actions">
+      <button class="copy-btn" id="copyBtn">copy widget link</button>
+      <span class="copy-status" id="copyStatus"></span>
+    </div>
+  </div>
 
-<table id="tbl">
-  <colgroup><col class="c0"><col><col><col><col><col><col><col><col class="c8"></colgroup>
-</table>
+  <section class="widget-shell">
+    <div class="widget-body">
+      <div class="chart-box" id="chartBox">
+        <svg id="chartSvg"></svg>
+      </div>
 
-<div class="bottom-row">
-  <button class="add-btn" id="addBtn">+ add habit</button>
-  <button class="clear-btn" id="clearBtn">clear all</button>
-</div>
+      <table id="tbl">
+        <colgroup><col class="c0"><col><col><col><col><col><col><col><col class="c8"></colgroup>
+      </table>
+
+      <div class="bottom-row">
+        <button class="add-btn" id="addBtn">+ add habit</button>
+        <button class="clear-btn" id="clearBtn">clear all</button>
+      </div>
+    </div>
+  </section>
+</main>
 
 <script>
 var D=['Sa','Su','Mo','Tu','We','Th','Fr'];
@@ -74,6 +117,54 @@ var H,G;
 var CHART_H=120;
 var PAD_TOP=14;
 var PAD_BOT=4;
+var THEMES={
+  light:{
+    pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',
+    t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',neu:'#ece8df',neuB:'rgba(55,53,47,0.12)',
+    green:'#5fa620',greenB:'#3d7010',red:'#d94040',redB:'#8b2020',accent:'#c8f06a',
+    gridStroke:'rgba(55,53,47,0.08)',areaFill:'rgba(95,166,32,0.08)',avgFill:'rgba(55,53,47,0.035)'
+  },
+  dark:{
+    pageBg:'#191919',bg:'#191919',bg2:'#242424',border:'rgba(255,255,255,0.09)',
+    t1:'#e9e9e7',t2:'#a8a8a3',t3:'#6f6f6a',neu:'#2b2b2a',neuB:'rgba(255,255,255,0.12)',
+    green:'#5fa620',greenB:'#3d7010',red:'#d94040',redB:'#8b2020',accent:'#c8f06a',
+    gridStroke:'rgba(255,255,255,0.06)',areaFill:'rgba(95,166,32,0.08)',avgFill:'rgba(255,255,255,0.03)'
+  }
+};
+var ACTIVE_THEME=THEMES.light;
+
+function css(name,value){document.documentElement.style.setProperty(name,value)}
+function themeChoice(){
+  var q=new URLSearchParams(window.location.search).get('theme');
+  if(q==='light'||q==='dark')return q;
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function applyTheme(){
+  ACTIVE_THEME=THEMES[themeChoice()]||THEMES.light;
+  css('--page-bg',ACTIVE_THEME.pageBg);
+  css('--bg',ACTIVE_THEME.bg);
+  css('--bg2',ACTIVE_THEME.bg2);
+  css('--border',ACTIVE_THEME.border);
+  css('--t1',ACTIVE_THEME.t1);
+  css('--t2',ACTIVE_THEME.t2);
+  css('--t3',ACTIVE_THEME.t3);
+  css('--green',ACTIVE_THEME.green);
+  css('--green-b',ACTIVE_THEME.greenB);
+  css('--red',ACTIVE_THEME.red);
+  css('--red-b',ACTIVE_THEME.redB);
+  css('--neu',ACTIVE_THEME.neu);
+  css('--neu-b',ACTIVE_THEME.neuB);
+  css('--accent',ACTIVE_THEME.accent);
+}
+function isEmbedMode(){
+  var q=new URLSearchParams(window.location.search).get('embed');
+  if(q==='1'||q==='true')return true;
+  try{return window.self!==window.top;}catch(e){return true;}
+}
+function applyEmbedMode(){
+  if(isEmbedMode())document.body.classList.add('embed-mode');
+  else document.body.classList.remove('embed-mode');
+}
 
 function load(){
   try{var a=localStorage.getItem('ht_h'),b=localStorage.getItem('ht_g');
@@ -114,6 +205,35 @@ function avgColor(v){
   if(v<0)return'#5f5e58';
   var t=v/100;
   return'rgb('+Math.round(217+(95-217)*t)+','+Math.round(64+(166-64)*t)+','+Math.round(64+(32-64)*t)+')';
+}
+function copyStatus(msg){
+  var el=document.getElementById('copyStatus');
+  el.textContent=msg;
+  window.clearTimeout(copyStatus.t);
+  copyStatus.t=window.setTimeout(function(){el.textContent='';},1800);
+}
+function currentWidgetUrl(){
+  var params=new URLSearchParams(window.location.search);
+  params.set('embed','1');
+  var query=params.toString();
+  return window.location.origin+window.location.pathname+(query?'?'+query:'');
+}
+function copyLink(){
+  var text=currentWidgetUrl();
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(function(){copyStatus('widget link copied');},function(){copyStatus('copy failed');});
+    return;
+  }
+  var ta=document.createElement('textarea');
+  ta.value=text;
+  ta.setAttribute('readonly','');
+  ta.style.position='absolute';
+  ta.style.left='-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand('copy');copyStatus('widget link copied');}
+  catch(e){copyStatus('copy failed');}
+  document.body.removeChild(ta);
 }
 
 function renderTable(){
@@ -185,39 +305,39 @@ function renderChart(){
   var gridlines='';
   for(var i=0;i<=4;i++){
     var gy=yPos(i*25);
-    gridlines+='<line x1="'+gridLeft+'" y1="'+gy.toFixed(1)+'" x2="'+gridRight+'" y2="'+gy.toFixed(1)+'" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>';
+    gridlines+='<line x1="'+gridLeft+'" y1="'+gy.toFixed(1)+'" x2="'+gridRight+'" y2="'+gy.toFixed(1)+'" stroke="'+ACTIVE_THEME.gridStroke+'" stroke-width="1"/>';
   }
 
   var circles='';
   for(var i=0;i<pts.length;i++){
     var rad=i===TI?6:4;
-    var fill=i===TI?'#c8f06a':'#5fa620';
-    circles+='<circle cx="'+pts[i].x.toFixed(1)+'" cy="'+pts[i].y.toFixed(1)+'" r="'+rad+'" fill="'+fill+'" stroke="#111110" stroke-width="2"/>';
+    var fill=i===TI?ACTIVE_THEME.accent:ACTIVE_THEME.green;
+    circles+='<circle cx="'+pts[i].x.toFixed(1)+'" cy="'+pts[i].y.toFixed(1)+'" r="'+rad+'" fill="'+fill+'" stroke="'+ACTIVE_THEME.pageBg+'" stroke-width="2"/>';
     var lblY=pts[i].y-10;
     if(lblY<12)lblY=pts[i].y+14;
-    circles+='<text x="'+pts[i].x.toFixed(1)+'" y="'+lblY+'" text-anchor="middle" fill="'+(i===TI?'#c8f06a':'#5f5e58')+'" font-size="8" font-family="DM Sans">'+p[i]+'%</text>';
+    circles+='<text x="'+pts[i].x.toFixed(1)+'" y="'+lblY+'" text-anchor="middle" fill="'+(i===TI?ACTIVE_THEME.accent:ACTIVE_THEME.t3)+'" font-size="8" font-family="DM Sans">'+p[i]+'%</text>';
   }
 
   var yLabels='';
   var ySteps=[0,25,50,75,100];
   for(var i=0;i<ySteps.length;i++){
     var ly=yPos(ySteps[i]);
-    yLabels+='<text x="'+(yAxisRight-4)+'" y="'+(ly+3)+'" text-anchor="end" fill="#5f5e58" font-size="9" font-family="DM Sans">'+ySteps[i]+'%</text>';
+    yLabels+='<text x="'+(yAxisRight-4)+'" y="'+(ly+3)+'" text-anchor="end" fill="'+ACTIVE_THEME.t3+'" font-size="9" font-family="DM Sans">'+ySteps[i]+'%</text>';
   }
 
   // Week avg — big, filling its column
   var acol=avgColor(avg);
   var avLabel=avg>=0?avg+'%':'--';
   // Background rect for the avg cell
-  var avgSvg='<rect x="'+avgLeft.toFixed(1)+'" y="0" width="'+avgWidth.toFixed(1)+'" height="'+CHART_H+'" fill="rgba(255,255,255,0.015)" rx="0"/>';
+  var avgSvg='<rect x="'+avgLeft.toFixed(1)+'" y="0" width="'+avgWidth.toFixed(1)+'" height="'+CHART_H+'" fill="'+ACTIVE_THEME.avgFill+'" rx="0"/>';
   // Large number centered
   avgSvg+='<text x="'+avgCenterX.toFixed(1)+'" y="'+(CHART_H/2+2)+'" text-anchor="middle" dominant-baseline="middle" fill="'+acol+'" font-size="24" font-family="DM Mono,monospace" font-weight="500">'+avLabel+'</text>';
   // Label
-  avgSvg+='<text x="'+avgCenterX.toFixed(1)+'" y="'+(CHART_H/2+18)+'" text-anchor="middle" fill="#5f5e58" font-size="7" font-family="DM Sans">AVG</text>';
+  avgSvg+='<text x="'+avgCenterX.toFixed(1)+'" y="'+(CHART_H/2+18)+'" text-anchor="middle" fill="'+ACTIVE_THEME.t3+'" font-size="7" font-family="DM Sans">AVG</text>';
 
   document.getElementById('chartSvg').innerHTML=gridlines
-    +'<path d="'+fillD+'" fill="rgba(95,166,32,0.06)"/>'
-    +'<path d="'+pathD+'" stroke="#5fa620" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'
+    +'<path d="'+fillD+'" fill="'+ACTIVE_THEME.areaFill+'"/>'
+    +'<path d="'+pathD+'" stroke="'+ACTIVE_THEME.green+'" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'
     +circles+yLabels+avgSvg;
 }
 
@@ -225,6 +345,7 @@ function render(){
   renderTable();
   requestAnimationFrame(function(){renderChart()});
 }
+document.getElementById('copyBtn').onclick=copyLink;
 document.getElementById('addBtn').onclick=function(){
   H.push('New habit');G.push([0,0,0,0,0,0,0]);save();render();
   var inps=document.querySelectorAll('.ni');inps[inps.length-1].focus();inps[inps.length-1].select();
@@ -235,6 +356,11 @@ document.getElementById('clearBtn').onclick=function(){
   render();
 };
 window.addEventListener('resize',function(){requestAnimationFrame(renderChart)});
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){applyTheme();render()});
+}
+applyEmbedMode();
+applyTheme();
 load();render();
 </script>
 </body>
