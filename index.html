@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust The Process — Habit Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#111110;--bg2:#1a1a18;--border:rgba(255,255,255,0.08);
+    --t1:#e8e6df;--t2:#9c9a91;--t3:#5f5e58;
+    --green:#5fa620;--green-b:#3d7010;
+    --red:#d94040;--red-b:#8b2020;
+    --neu:#2a2a27;--neu-b:rgba(255,255,255,0.12);
+    --accent:#c8f06a;
+    --chart-h:140px;
+    --col-habit:140px;
+    --col-del:28px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;padding:20px;-webkit-font-smoothing:antialiased}
+  .header{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .header h1{font-size:18px;font-weight:600;letter-spacing:-0.3px}
+  .header .sub{font-size:12px;color:var(--t3)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .stat{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .stat-label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .stat-val{font-size:22px;font-weight:600}
+  .stat-val.g{color:var(--green)}
+  .legend{display:flex;gap:16px;margin-bottom:14px;font-size:11px;color:var(--t2)}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .legend .dot{width:8px;height:8px;border-radius:3px}
+
+  .wrap{overflow-x:auto}
+  .grid{min-width:520px}
+
+  /* Shared 9-column grid: habit | 7 days | delete */
+  .row-grid{
+    display:grid;
+    grid-template-columns: var(--col-habit) repeat(7,1fr) var(--col-del);
+  }
+
+  /* --- CHART --- */
+  .chart-container{position:relative;margin-bottom:2px}
+  .chart-bg{height:var(--chart-h)}
+  .chart-bg .gutter{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding:2px 6px 2px 0;height:100%}
+  .chart-bg .gutter span{font-size:10px;color:var(--t3);line-height:1}
+  .chart-bg .day-area{position:relative;height:100%;border-left:1px solid rgba(255,255,255,0.03)}
+  .chart-bg .day-area:first-of-type{border-left:none}
+
+  /* Gridlines */
+  .gridlines{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    grid-column:2/9;display:flex;flex-direction:column;justify-content:space-between}
+  .gridlines .gl{height:0;border-top:1px solid rgba(255,255,255,0.04)}
+
+  /* Data points + lines drawn via SVG overlay */
+  .chart-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;grid-column:2/9}
+  .chart-dots{position:absolute;top:0;left:0;width:100%;height:100%;grid-column:2/9}
+  .chart-dot{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--bg);transform:translate(-50%,-50%);z-index:2}
+  .chart-dot.today{background:var(--accent);width:12px;height:12px}
+  .chart-pct{position:absolute;font-size:10px;color:var(--t2);transform:translate(-50%,0);margin-top:2px;white-space:nowrap}
+
+  /* --- TABLE --- */
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  col.hc{width:var(--col-habit)}col.xc{width:var(--col-del)}
+  th,td{padding:8px 4px;text-align:center;font-size:13px;border-bottom:1px solid var(--border)}
+  th{color:var(--t3);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.3px;padding-top:10px}
+  th:first-child,td:first-child{text-align:left;padding-left:8px}
+  th.today{color:var(--accent)}
+
+  .ni{background:transparent;border:none;color:var(--t1);font-family:inherit;font-size:13px;width:100%;outline:none;padding:2px 0}
+  .ni:focus{border-bottom:1px solid var(--accent)}
+  .cell{width:28px;height:28px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .1s,background .15s;border:1px solid var(--neu-b);background:var(--neu)}
+  .cell:active{transform:scale(.88)}
+  .cell.g{background:var(--green);border-color:var(--green-b)}
+  .cell.r{background:var(--red);border-color:var(--red-b)}
+  .del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;opacity:0;transition:opacity .15s;padding:4px}
+  tr:hover .del{opacity:1}
+  .del:hover{color:var(--red)}
+  .add-btn{background:none;border:1px dashed var(--border);color:var(--t3);font-family:inherit;font-size:12px;cursor:pointer;padding:8px 14px;border-radius:8px;margin-top:10px;transition:border-color .2s,color .2s;width:100%}
+  .add-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .reset-row{display:flex;justify-content:flex-end;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+  .reset-btn{background:none;border:none;color:var(--t3);font-family:inherit;font-size:11px;cursor:pointer;padding:4px 8px}
+  .reset-btn:hover{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="header"><h1>Trust the process</h1><span class="sub">weekly habit tracker</span></div>
+<div class="stats">
+  <div class="stat"><div class="stat-label">Habits</div><div class="stat-val" id="sh">0</div></div>
+  <div class="stat"><div class="stat-label">Today</div><div class="stat-val g" id="st">--</div></div>
+  <div class="stat"><div class="stat-label">Week avg</div><div class="stat-val" id="sa">--</div></div>
+</div>
+<div class="legend">
+  <span><span class="dot" style="background:var(--green)"></span>Done</span>
+  <span><span class="dot" style="background:var(--neu);border:1px solid var(--neu-b)"></span>Neutral</span>
+  <span><span class="dot" style="background:var(--red)"></span>Not done</span>
+</div>
+<div class="wrap"><div class="grid">
+  <div class="chart-container">
+    <div class="chart-bg row-grid" id="chartBg"></div>
+    <svg class="chart-svg" id="chartSvg" style="display:none"></svg>
+  </div>
+  <table id="tbl">
+    <colgroup><col class="hc"><col><col><col><col><col><col><col><col class="xc"></colgroup>
+  </table>
+</div></div>
+<button class="add-btn" id="addBtn">+ add habit</button>
+<div class="reset-row">
+  <button class="reset-btn" onclick="resetWeek()">Reset week</button>
+  <button class="reset-btn" onclick="if(confirm('Delete all habits and data?')){localStorage.removeItem('ht_h');localStorage.removeItem('ht_g');location.reload()}">Clear all</button>
+</div>
+<script>
+var D=['Sat','Sun','Mon','Tue','Wed','Thu','Fri'];
+var TI=[6,0,1,2,3,4,5][new Date().getDay()];
+var H,G;
+
+function load(){
+  try{var a=localStorage.getItem('ht_h'),b=localStorage.getItem('ht_g');
+  if(a&&b){H=JSON.parse(a);G=JSON.parse(b);return}}catch(e){}
+  H=['Exercise','Read 30 min','Study French','Meditate','No junk food','Sleep by 11','Deep work 2h'];
+  G=H.map(function(){return[0,0,0,0,0,0,0]});
+}
+function save(){localStorage.setItem('ht_h',JSON.stringify(H));localStorage.setItem('ht_g',JSON.stringify(G))}
+function cy(v){return v===0?1:v===1?2:0}
+function ic(v){
+  if(v===1)return'<svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 7.5L5.5 10L11 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  if(v===2)return'<svg width="14" height="14" viewBox="0 0 14 14"><path d="M4 4L10 10M10 4L4 10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+  return'';
+}
+function pcts(){
+  return D.map(function(_,di){
+    if(!H.length)return 0;
+    var g=0;for(var i=0;i<H.length;i++)if(G[i][di]===1)g++;
+    return Math.round(g/H.length*100);
+  });
+}
+function stats(){
+  document.getElementById('sh').textContent=H.length;
+  var p=pcts();
+  document.getElementById('st').textContent=p[TI]+'%';
+  var f=p.filter(function(_,i){for(var j=0;j<H.length;j++)if(G[j][i]!==0)return true;return false});
+  document.getElementById('sa').textContent=f.length?Math.round(f.reduce(function(a,b){return a+b},0)/f.length)+'%':'--';
+}
+
+function renderChart(){
+  var bg=document.getElementById('chartBg');
+  var s='<div class="gutter"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span></div>';
+  for(var i=0;i<7;i++) s+='<div class="day-area" id="da-'+i+'"></div>';
+  s+='<div></div>';
+  bg.innerHTML=s;
+
+  var p=pcts();
+  var ch=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--chart-h'));
+
+  // Draw connecting lines with SVG overlaid on the day columns area
+  var firstDay=document.getElementById('da-0');
+  var lastDay=document.getElementById('da-6');
+  if(!firstDay||!lastDay)return;
+
+  var contRect=bg.getBoundingClientRect();
+  var svgEl=document.getElementById('chartSvg');
+
+  // Position SVG to cover exactly the 7 day columns
+  var fdRect=firstDay.getBoundingClientRect();
+  var ldRect=lastDay.getBoundingClientRect();
+  var svgLeft=fdRect.left-contRect.left;
+  var svgWidth=ldRect.right-fdRect.left;
+  var svgTop=0;
+
+  svgEl.style.display='block';
+  svgEl.style.left=svgLeft+'px';
+  svgEl.style.width=svgWidth+'px';
+  svgEl.style.height=ch+'px';
+  svgEl.style.top='0';
+  svgEl.setAttribute('viewBox','0 0 '+svgWidth+' '+ch);
+  svgEl.setAttribute('preserveAspectRatio','none');
+
+  // Compute center-x of each day column relative to SVG
+  var pts=[];
+  for(var i=0;i<7;i++){
+    var el=document.getElementById('da-'+i);
+    var r=el.getBoundingClientRect();
+    var cx=r.left-fdRect.left+r.width/2;
+    var cy2=ch-4-(p[i]/100)*(ch-8);
+    pts.push({x:cx,y:cy2});
+  }
+
+  // Build SVG path
+  var pathD='';
+  var fillD='';
+  for(var i=0;i<pts.length;i++){
+    pathD+=(i===0?'M':'L')+pts[i].x.toFixed(1)+' '+pts[i].y.toFixed(1);
+  }
+  fillD=pathD+'L'+pts[pts.length-1].x.toFixed(1)+' '+(ch)+' L'+pts[0].x.toFixed(1)+' '+(ch)+' Z';
+
+  var circles='';
+  for(var i=0;i<pts.length;i++){
+    var r=i===TI?6:5;
+    var fill=i===TI?'#c8f06a':'#5fa620';
+    circles+='<circle cx="'+pts[i].x.toFixed(1)+'" cy="'+pts[i].y.toFixed(1)+'" r="'+r+'" fill="'+fill+'" stroke="#111110" stroke-width="2"/>';
+  }
+
+  svgEl.innerHTML='<path d="'+fillD+'" fill="rgba(95,166,32,0.08)"/><path d="'+pathD+'" stroke="#5fa620" stroke-width="2" fill="none" stroke-linejoin="round"/>'
+    +circles;
+
+  // Add percentage labels under dots
+  for(var i=0;i<7;i++){
+    var el=document.getElementById('da-'+i);
+    // Remove old labels
+    var old=el.querySelector('.pct-lbl');
+    if(old)old.remove();
+    var lbl=document.createElement('div');
+    lbl.className='pct-lbl';
+    lbl.style.cssText='position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:10px;color:'+
+      (i===TI?'#c8f06a':'#5f5e58')+';white-space:nowrap';
+    lbl.textContent=p[i]+'%';
+    el.style.position='relative';
+    el.appendChild(lbl);
+  }
+
+  // Gridlines
+  var existing=bg.querySelector('.gl-wrap');
+  if(existing)existing.remove();
+  var glWrap=document.createElement('div');
+  glWrap.className='gl-wrap';
+  glWrap.style.cssText='position:absolute;top:0;bottom:0;left:'+svgLeft+'px;width:'+svgWidth+'px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none';
+  for(var i=0;i<5;i++){
+    var gl=document.createElement('div');
+    gl.style.cssText='border-top:1px solid rgba(255,255,255,0.04);height:0';
+    glWrap.appendChild(gl);
+  }
+  bg.style.position='relative';
+  bg.appendChild(glWrap);
+}
+
+function renderTable(){
+  var s='<thead><tr><th>Habit</th>';
+  for(var i=0;i<7;i++)s+='<th'+(i===TI?' class="today"':'')+'>'+D[i]+'</th>';
+  s+='<th></th></tr></thead><tbody>';
+  for(var hi=0;hi<H.length;hi++){
+    s+='<tr><td><input class="ni" value="'+H[hi].replace(/"/g,'&quot;')+'" data-i="'+hi+'"></td>';
+    for(var di=0;di<7;di++){
+      var v=G[hi][di],cl=v===1?'g':v===2?'r':'';
+      s+='<td><div class="cell '+cl+'" data-h="'+hi+'" data-d="'+di+'">'+ic(v)+'</div></td>';
+    }
+    s+='<td><button class="del" data-h="'+hi+'">&#x2715;</button></td></tr>';
+  }
+  s+='</tbody>';
+  document.getElementById('tbl').innerHTML=s;
+  document.querySelectorAll('.cell').forEach(function(b){
+    b.onclick=function(){G[+b.dataset.h][+b.dataset.d]=cy(G[+b.dataset.h][+b.dataset.d]);save();render()};
+  });
+  document.querySelectorAll('.ni').forEach(function(inp){
+    inp.onchange=function(){H[+inp.dataset.i]=inp.value;save()};
+  });
+  document.querySelectorAll('.del').forEach(function(b){
+    b.onclick=function(){H.splice(+b.dataset.h,1);G.splice(+b.dataset.h,1);save();render()};
+  });
+}
+
+function render(){renderTable();stats();renderChart()}
+function resetWeek(){
+  if(!confirm('Reset all toggles for this week?'))return;
+  G=H.map(function(){return[0,0,0,0,0,0,0]});save();render();
+}
+document.getElementById('addBtn').onclick=function(){
+  H.push('New habit');G.push([0,0,0,0,0,0,0]);save();render();
+  var inps=document.querySelectorAll('.ni');inps[inps.length-1].focus();inps[inps.length-1].select();
+};
+window.addEventListener('resize',function(){renderChart()});
+load();render();
+</script>
+</body>
+</html>
