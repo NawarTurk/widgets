@@ -46,26 +46,24 @@
   html.embed-mode,html.embed-mode body,body.embed-mode{background:transparent}
   html.embed-mode body,body.embed-mode{display:block;padding:0;width:100%;height:auto;min-height:0;min-width:0}
   .stack{display:flex;flex-direction:column;align-items:stretch;gap:1px;width:100%}
-  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px;padding:2px 4px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);min-width:0;width:100%}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:4px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);min-width:0;width:100%}
   .row-copy{display:flex;align-items:center;gap:3px;justify-content:center;white-space:nowrap;min-width:0;width:100%}
   .badge{width:5px;height:5px;border-radius:999px;flex-shrink:0}
   .badge.easy{background:var(--easy)}
   .badge.medium{background:var(--medium)}
   .badge.hard{background:var(--hard)}
-  .row-title{font-size:9px;font-weight:600;color:var(--t1);letter-spacing:.03em;text-transform:uppercase}
+  .row-title{font-size:20px;font-weight:600;color:var(--t1);letter-spacing:.03em;text-transform:uppercase}
   .count{font-family:'DM Mono',monospace;font-size:20px;line-height:1;color:var(--t1);text-align:center;min-width:2ch}
-  .controls{display:flex;flex-direction:column;gap:1px;justify-content:center}
-  .btn-small{width:14px;height:14px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--t1);font-size:7px;cursor:pointer;display:grid;place-items:center;transition:transform .1s,border-color .2s,background .2s;line-height:1}
+  .btn-small{width:14px;height:14px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--t1);font-size:8px;cursor:pointer;display:grid;place-items:center;transition:transform .1s,border-color .2s,background .2s;line-height:1}
   .btn-small:hover{border-color:var(--accent);background:var(--bg2)}
   .btn-small:active{transform:scale(.95)}
   .embed-mode .widget-shell{gap:0}
   .embed-mode .stack{gap:1px}
-  .embed-mode .row{gap:3px;padding:2px 3px;border-radius:5px;width:100%}
+  .embed-mode .row{gap:3px;padding:3px 6px;border-radius:5px;width:100%}
   .embed-mode .row-copy{gap:2px}
   .embed-mode .badge{width:4px;height:4px}
-  .embed-mode .row-title{font-size:9px}
+  .embed-mode .row-title{font-size:18px}
   .embed-mode .count{font-size:18px}
-  .embed-mode .controls{gap:1px}
   .embed-mode .btn-small{width:12px;height:12px;font-size:7px}
   @media (max-width:640px){
     body{padding:6px}
@@ -95,27 +93,21 @@
     <div class="stack">
       <div class="row" data-key="easy">
         <div class="row-copy"><span class="badge easy"></span><div class="row-title">Easy</div></div>
+        <button class="btn-small" type="button" data-action="decrease" data-key="easy" aria-label="Decrease easy count">▼</button>
         <div class="count" data-count="easy">0</div>
-        <div class="controls">
-          <button class="btn-small" type="button" data-action="increase" data-key="easy" aria-label="Increase easy count">↑</button>
-          <button class="btn-small" type="button" data-action="decrease" data-key="easy" aria-label="Decrease easy count">↓</button>
-        </div>
+        <button class="btn-small" type="button" data-action="increase" data-key="easy" aria-label="Increase easy count">▲</button>
       </div>
       <div class="row" data-key="medium">
         <div class="row-copy"><span class="badge medium"></span><div class="row-title">Medium</div></div>
+        <button class="btn-small" type="button" data-action="decrease" data-key="medium" aria-label="Decrease medium count">▼</button>
         <div class="count" data-count="medium">0</div>
-        <div class="controls">
-          <button class="btn-small" type="button" data-action="increase" data-key="medium" aria-label="Increase medium count">↑</button>
-          <button class="btn-small" type="button" data-action="decrease" data-key="medium" aria-label="Decrease medium count">↓</button>
-        </div>
+        <button class="btn-small" type="button" data-action="increase" data-key="medium" aria-label="Increase medium count">▲</button>
       </div>
       <div class="row" data-key="hard">
         <div class="row-copy"><span class="badge hard"></span><div class="row-title">Hard</div></div>
+        <button class="btn-small" type="button" data-action="decrease" data-key="hard" aria-label="Decrease hard count">▼</button>
         <div class="count" data-count="hard">0</div>
-        <div class="controls">
-          <button class="btn-small" type="button" data-action="increase" data-key="hard" aria-label="Increase hard count">↑</button>
-          <button class="btn-small" type="button" data-action="decrease" data-key="hard" aria-label="Decrease hard count">↓</button>
-        </div>
+        <button class="btn-small" type="button" data-action="increase" data-key="hard" aria-label="Increase hard count">▲</button>
       </div>
     </div>
   </section>
