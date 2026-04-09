@@ -31,9 +31,10 @@
   .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
   .embed-mode .page-tools{display:none}
   .embed-mode .widget-grid{max-width:none}
-  .stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-  .row{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg),var(--bg2));min-width:0}
-  .row-copy{display:flex;align-items:center;gap:10px;min-width:0}
+  body.embed-mode{padding:0}
+  .stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .row{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg),var(--bg2));min-width:0}
+  .row-copy{display:flex;align-items:center;gap:8px;min-width:0}
   .badge{width:10px;height:10px;border-radius:999px;flex-shrink:0}
   .badge.easy{background:var(--easy)}
   .badge.medium{background:var(--medium)}
@@ -50,6 +51,18 @@
   .total{font-size:11px;color:var(--t2)}
   .reset-btn{background:none;border:none;color:var(--t3);font:inherit;font-size:10px;cursor:pointer}
   .reset-btn:hover{color:var(--t1)}
+  .embed-mode .widget-shell{padding:10px 8px;border-radius:16px}
+  .embed-mode .stack{gap:4px}
+  .embed-mode .row{gap:6px;padding:8px 6px;border-radius:14px}
+  .embed-mode .row-copy{gap:6px}
+  .embed-mode .badge{width:9px;height:9px}
+  .embed-mode .row-title{font-size:11px}
+  .embed-mode .row-sub{font-size:8px;letter-spacing:.07em}
+  .embed-mode .count{font-size:20px}
+  .embed-mode .controls{gap:4px}
+  .embed-mode .btn-small{width:28px;height:28px;border-radius:10px;font-size:18px}
+  .embed-mode .footer{margin-top:8px}
+  .embed-mode .total,.embed-mode .reset-btn{font-size:9px}
   @media (max-width:640px){
     body{padding:10px}
     .widget-shell{padding:14px 12px}
@@ -58,6 +71,11 @@
     .copy-status{text-align:left}
     .stack{grid-template-columns:1fr}
     .row{gap:10px}
+    .embed-mode .stack{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .embed-mode .row{gap:8px;padding:9px 7px}
+  }
+  @media (max-width:430px){
+    .embed-mode .stack{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -66,7 +84,7 @@
   <div class="page-tools">
     <div class="widget-meta">
       <h1 class="widget-title">LeetCode Counter</h1>
-      <p class="widget-sub">Track solved problems by difficulty with three compact counters in one row.</p>
+      <p class="widget-sub">Easy, medium, hard.</p>
     </div>
     <div class="widget-actions">
       <div class="theme-toggle" id="themeToggle">
@@ -139,7 +157,7 @@ var STORAGE_KEY='leetcode_counter_values';
 var SELECTED_THEME='light';
 var THEMES={
   light:{pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#caef72'},
-  dark:{pageBg:'#191919',bg:'#191919',bg2:'#242424',border:'rgba(255,255,255,0.09)',t1:'#e9e9e7',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#caef72'}
+  dark:{pageBg:'#191919',bg:'#191919',bg2:'#202020',border:'rgba(255,255,255,0.06)',t1:'#e3e3e1',t2:'#9b9a97',t3:'#5a5a5a',accent:'#caef72'}
 };
 var counts=getCounts();
 function css(name,value){document.documentElement.style.setProperty(name,value)}
@@ -259,6 +277,7 @@ if(window.matchMedia){
 applyEmbedMode();
 applyTheme();
 render();
+(function(){function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({widgetHeight:h,src:location.pathname},'*');}sendHeight();new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener('resize',sendHeight);})();
 </script>
 </body>
 </html>

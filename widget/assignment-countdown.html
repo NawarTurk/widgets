@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignment Countdown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page-bg:#f7f6f3;--bg:#ffffff;--bg2:#f1efe8;--border:rgba(55,53,47,0.09);
+    --t1:#2f2c27;--t2:#6b665c;--t3:#9b968b;
+    --accent:#caef72;--green:#7cbf65;--yellow:#e8b931;--red:#e05a47;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--page-bg)}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:6px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .widget-grid{max-width:320px;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .widget-shell{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(15,15,15,0.04)}
+  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
+  .widget-sub{font-size:11px;line-height:1.4;color:var(--t2)}
+  .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
+  .theme-btn{border:none;background:transparent;color:var(--t2);font:inherit;font-size:10px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .theme-btn.active{background:var(--bg);color:var(--t1);box-shadow:0 1px 2px rgba(15,15,15,0.08)}
+  .copy-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
+  .copy-btn:hover{border-color:var(--accent)}
+  .copy-btn:active{transform:scale(.98)}
+  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .embed-mode .page-tools{display:none}
+  .embed-mode .widget-grid{max-width:none}
+  body.embed-mode{padding:2px}
+  .embed-mode .widget-shell{padding:4px;border-radius:10px;box-shadow:none}
+  .add-row{display:flex;gap:4px;margin-bottom:6px}
+  .add-row input{border:1px solid var(--border);background:var(--bg);color:var(--t1);font:inherit;font-size:11px;padding:5px 8px;border-radius:8px;outline:none}
+  .add-row input:focus{border-color:var(--accent)}
+  .add-row input[type="text"]{min-width:0}
+  .add-row input[type="date"]{width:auto}
+  .add-btn{border:1px solid var(--border);background:var(--bg2);color:var(--t1);font:inherit;font-size:11px;padding:5px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .add-btn:hover{border-color:var(--accent)}
+  .list{display:flex;flex-direction:column;gap:3px}
+  .item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)}
+  .item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .item-dot.green{background:var(--green)}
+  .item-dot.yellow{background:var(--yellow)}
+  .item-dot.red{background:var(--red)}
+  .item-name{font-size:11px;font-weight:500;color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);white-space:nowrap}
+  .item-time.overdue{color:var(--red);font-weight:500}
+  .item-del{border:none;background:none;color:var(--t3);font-size:14px;cursor:pointer;padding:0 2px;line-height:1}
+  .item-del:hover{color:var(--red)}
+  .empty{font-size:11px;color:var(--t3);text-align:center;padding:6px 0}
+  .embed-mode .add-row input{font-size:10px;padding:4px 6px;border-radius:6px}
+  .embed-mode .add-btn{font-size:10px;padding:4px 8px;border-radius:6px}
+  .embed-mode .item{padding:4px 6px;gap:6px;border-radius:8px}
+  .embed-mode .item-name{font-size:10px}
+  .embed-mode .item-time{font-size:9px}
+  .embed-mode .list{gap:2px}
+  .embed-mode .add-row{gap:3px;margin-bottom:4px}
+  @media (max-width:640px){
+    body{padding:8px}
+    .page-tools{flex-direction:column;align-items:stretch}
+    .widget-actions{justify-content:space-between}
+    .copy-status{text-align:left}
+  }
+</style>
+</head>
+<body>
+<main class="widget-grid">
+  <div class="page-tools">
+    <div class="widget-meta">
+      <h1 class="widget-title">Assignment Countdown</h1>
+      <p class="widget-sub">Due dates.</p>
+    </div>
+    <div class="widget-actions">
+      <div class="theme-toggle">
+        <button class="theme-btn" type="button" data-theme="light">light</button>
+        <button class="theme-btn" type="button" data-theme="dark">dark</button>
+      </div>
+      <button class="copy-btn" id="copyBtn">copy widget link</button>
+      <span class="copy-status" id="copyStatus"></span>
+    </div>
+  </div>
+  <section class="widget-shell">
+    <div class="add-row">
+      <input type="text" id="nameInput" placeholder="assignment" maxlength="40" style="width:90px;flex:none">
+      <input type="date" id="dateInput">
+      <button class="add-btn" id="addBtn" type="button">+</button>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+</main>
+<script>
+var STORAGE_KEY='assignment_countdown_items';
+var SELECTED_THEME='light';
+var THEMES={
+  light:{pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#caef72',green:'#7cbf65',yellow:'#e8b931',red:'#e05a47'},
+  dark:{pageBg:'#191919',bg:'#191919',bg2:'#202020',border:'rgba(255,255,255,0.06)',t1:'#e3e3e1',t2:'#9b9a97',t3:'#5a5a5a',accent:'#caef72',green:'#7cbf65',yellow:'#e8b931',red:'#e05a47'}
+};
+function css(n,v){document.documentElement.style.setProperty(n,v)}
+function themeChoice(){var q=new URLSearchParams(window.location.search).get('theme');if(q==='light'||q==='dark')return q;return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+function syncThemeButtons(){document.querySelectorAll('.theme-btn').forEach(function(b){b.classList.toggle('active',b.dataset.theme===SELECTED_THEME);});}
+function setThemeQuery(t){var p=new URLSearchParams(window.location.search);p.set('theme',t);history.replaceState(null,'',window.location.pathname+'?'+p.toString());}
+function applyTheme(t){var a=THEMES[t||themeChoice()]||THEMES.light;SELECTED_THEME=t||themeChoice();css('--page-bg',a.pageBg);css('--bg',a.bg);css('--bg2',a.bg2);css('--border',a.border);css('--t1',a.t1);css('--t2',a.t2);css('--t3',a.t3);css('--accent',a.accent);css('--green',a.green);css('--yellow',a.yellow);css('--red',a.red);syncThemeButtons();}
+function isEmbedMode(){var q=new URLSearchParams(window.location.search).get('embed');if(q==='1'||q==='true')return true;try{return window.self!==window.top;}catch(e){return true;}}
+function applyEmbedMode(){if(isEmbedMode())document.body.classList.add('embed-mode');}
+function copyStatus(m){var e=document.getElementById('copyStatus');e.textContent=m;clearTimeout(copyStatus.t);copyStatus.t=setTimeout(function(){e.textContent='';},1800);}
+function currentWidgetUrl(){var p=new URLSearchParams(window.location.search);p.set('embed','1');p.set('theme',SELECTED_THEME);return window.location.origin+window.location.pathname+'?'+p.toString();}
+function copyLink(){var t=currentWidgetUrl();if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){copyStatus('copied');},function(){copyStatus('failed');});return;}var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.position='absolute';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');copyStatus('copied');}catch(e){copyStatus('failed');}document.body.removeChild(ta);}
+function getItems(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){return [];}}
+function saveItems(items){localStorage.setItem(STORAGE_KEY,JSON.stringify(items));}
+function timeLeft(due){
+  var now=Date.now(),diff=due-now;
+  if(diff<=0)return{text:'overdue',cls:'overdue'};
+  var days=Math.floor(diff/864e5),hrs=Math.floor((diff%864e5)/36e5);
+  if(days>0)return{text:days+'d '+hrs+'h',cls:''};
+  var mins=Math.floor((diff%36e5)/6e4);
+  return{text:hrs+'h '+mins+'m',cls:''};
+}
+function urgencyColor(due){
+  var diff=due-Date.now(),days=diff/864e5;
+  if(diff<=0)return 'red';
+  if(days<=2)return 'red';
+  if(days<=5)return 'yellow';
+  return 'green';
+}
+function render(){
+  var items=getItems();
+  items.sort(function(a,b){return a.due-b.due;});
+  var el=document.getElementById('list');
+  if(!items.length){el.innerHTML='<div class="empty">no assignments yet</div>';return;}
+  el.innerHTML=items.map(function(it,i){
+    var tl=timeLeft(it.due),col=urgencyColor(it.due);
+    return '<div class="item"><span class="item-dot '+col+'"></span><span class="item-name">'+escHtml(it.name)+'</span><span class="item-time'+( tl.cls?' '+tl.cls:'')+'">'+tl.text+'</span><button class="item-del" data-idx="'+i+'" aria-label="Remove">&times;</button></div>';
+  }).join('');
+}
+function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function addItem(){
+  var name=document.getElementById('nameInput').value.trim();
+  var date=document.getElementById('dateInput').value;
+  if(!name||!date)return;
+  var due=new Date(date+'T23:59:00').getTime();
+  var items=getItems();
+  items.push({name:name,due:due});
+  saveItems(items);
+  document.getElementById('nameInput').value='';
+  document.getElementById('dateInput').value='';
+  render();
+}
+function removeItem(idx){
+  var items=getItems();
+  items.splice(idx,1);
+  saveItems(items);
+  render();
+}
+document.getElementById('addBtn').onclick=addItem;
+document.getElementById('nameInput').addEventListener('keydown',function(e){if(e.key==='Enter')addItem();});
+document.getElementById('list').addEventListener('click',function(e){
+  var btn=e.target.closest('.item-del');
+  if(btn)removeItem(Number(btn.dataset.idx));
+});
+document.getElementById('copyBtn').onclick=copyLink;
+document.querySelectorAll('.theme-btn').forEach(function(b){b.onclick=function(){SELECTED_THEME=b.dataset.theme;setThemeQuery(SELECTED_THEME);applyTheme(SELECTED_THEME);};});
+if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(!new URLSearchParams(window.location.search).get('theme'))applyTheme();});}
+applyEmbedMode();
+applyTheme();
+render();
+setInterval(render,60000);
+(function(){function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({widgetHeight:h,src:location.pathname},'*');}sendHeight();new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener('resize',sendHeight);})();
+</script>
+</body>
+</html>

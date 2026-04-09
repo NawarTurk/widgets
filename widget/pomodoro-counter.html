@@ -55,6 +55,18 @@
     .copy-status{text-align:left}
     .timer-value{font-size:36px}
   }
+  body.embed-mode{padding:4px}
+  .embed-mode .widget-shell{padding:12px 10px;box-shadow:none}
+  .embed-mode .timer-card{gap:8px}
+  .embed-mode .chip-row{gap:6px}
+  .embed-mode .chip{font-size:10px;padding:4px 8px}
+  .embed-mode .custom-input{width:64px;font-size:11px;padding:4px 8px}
+  .embed-mode .timer-core{padding:10px 8px 8px;border-radius:14px;gap:6px}
+  .embed-mode .timer-label{font-size:9px;letter-spacing:.12em}
+  .embed-mode .timer-value{font-size:32px}
+  .embed-mode .timer-state{font-size:10px}
+  .embed-mode .control-row{gap:6px}
+  .embed-mode .control-btn{font-size:10px;padding:6px 10px}
 </style>
 </head>
 <body>
@@ -62,7 +74,7 @@
   <div class="page-tools">
     <div class="widget-meta">
       <h1 class="widget-title">Pomodoro Timer</h1>
-      <p class="widget-sub">Pick a focus length, start the countdown, and keep your work block visible in Notion.</p>
+      <p class="widget-sub">Focus countdown timer.</p>
     </div>
     <div class="widget-actions">
       <div class="theme-toggle">
@@ -102,7 +114,7 @@ var selectedMinutes=25;
 var timerId=null;
 var THEMES={
   light:{pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#ff8f5a',accent2:'#ffe1d2',accentSoft:'rgba(255,143,90,0.10)'},
-  dark:{pageBg:'#191919',bg:'#191919',bg2:'#242424',border:'rgba(255,255,255,0.09)',t1:'#e9e9e7',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#ff8f5a',accent2:'rgba(255,143,90,0.18)',accentSoft:'rgba(255,143,90,0.14)'}
+  dark:{pageBg:'#191919',bg:'#191919',bg2:'#202020',border:'rgba(255,255,255,0.06)',t1:'#e3e3e1',t2:'#9b9a97',t3:'#5a5a5a',accent:'#ff8f5a',accent2:'rgba(255,143,90,0.08)',accentSoft:'rgba(255,143,90,0.04)'}
 };
 function css(name,value){document.documentElement.style.setProperty(name,value)}
 function themeChoice(){
@@ -272,6 +284,7 @@ syncCustomInput();
 applyTheme();
 renderTime();
 setState('ready to start');
+(function(){function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({widgetHeight:h,src:location.pathname},'*');}sendHeight();new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener('resize',sendHeight);})();
 </script>
 </body>
 </html>

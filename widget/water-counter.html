@@ -69,6 +69,25 @@
     .water-count{font-size:36px}
     .water-note{font-size:12px}
   }
+  body.embed-mode{padding:4px}
+  .embed-mode .widget-shell{padding:12px 10px;box-shadow:none}
+  .embed-mode .water-card{gap:10px;padding:0}
+  .embed-mode .water-header{gap:6px}
+  .embed-mode .water-kicker{font-size:9px}
+  .embed-mode .water-goal{font-size:10px}
+  .embed-mode .water-stage{gap:10px}
+  .embed-mode .cup-wrap{gap:10px}
+  .embed-mode .cup{width:72px;height:100px;border-radius:0 0 20px 20px}
+  .embed-mode .cup::before{top:-10px;left:8px;right:8px;height:12px;border-radius:14px 14px 0 0}
+  .embed-mode .cup::after{top:28px;right:-14px;width:18px;height:36px;border-radius:0 14px 14px 0}
+  .embed-mode .water-count{font-size:30px}
+  .embed-mode .water-label{font-size:9px}
+  .embed-mode .water-note{font-size:11px}
+  .embed-mode .water-btn{height:38px;border-radius:14px;font-size:22px}
+  .embed-mode .water-controls{gap:6px}
+  .embed-mode .water-actions{gap:8px}
+  .embed-mode .water-progress{font-size:10px}
+  .embed-mode .reset-btn{font-size:9px}
 </style>
 </head>
 <body>
@@ -76,7 +95,7 @@
   <div class="page-tools">
     <div class="widget-meta">
       <h1 class="widget-title">Water Counter</h1>
-      <p class="widget-sub">Track your glasses of water with a filling cup. A common daily target is around 8 cups.</p>
+      <p class="widget-sub">Daily hydration tracker.</p>
     </div>
     <div class="widget-actions">
       <div class="theme-toggle" id="themeToggle">
@@ -91,7 +110,6 @@
     <div class="water-card">
       <div class="water-header">
         <div>
-          <div class="water-kicker">Hydration today</div>
           <div class="water-goal">recommended goal: 8 cups</div>
         </div>
       </div>
@@ -103,7 +121,6 @@
           <div class="water-copy">
             <div class="water-count" id="countValue">0</div>
             <div class="water-label">cups</div>
-            <p class="water-note" id="waterNote">Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.</p>
           </div>
         </div>
         <div class="water-controls">
@@ -112,7 +129,6 @@
         </div>
       </div>
       <div class="water-actions">
-        <div class="water-progress" id="waterProgress">0 of 8 cups</div>
         <button class="reset-btn" id="resetBtn">reset</button>
       </div>
     </div>
@@ -124,7 +140,7 @@ var GOAL_CUPS=8;
 var SELECTED_THEME='light';
 var THEMES={
   light:{pageBg:'#f7f6f3',bg:'#ffffff',bg2:'#f1efe8',border:'rgba(55,53,47,0.09)',t1:'#2f2c27',t2:'#6b665c',t3:'#9b968b',accent:'#6bb7ff',accent2:'#d9ecff',accentSoft:'rgba(107,183,255,0.08)'},
-  dark:{pageBg:'#191919',bg:'#191919',bg2:'#242424',border:'rgba(255,255,255,0.09)',t1:'#e9e9e7',t2:'#a8a8a3',t3:'#6f6f6a',accent:'#6bb7ff',accent2:'rgba(107,183,255,0.18)',accentSoft:'rgba(107,183,255,0.12)'}
+  dark:{pageBg:'#191919',bg:'#191919',bg2:'#202020',border:'rgba(255,255,255,0.06)',t1:'#e3e3e1',t2:'#9b9a97',t3:'#5a5a5a',accent:'#6bb7ff',accent2:'rgba(107,183,255,0.08)',accentSoft:'rgba(107,183,255,0.04)'}
 };
 function css(name,value){document.documentElement.style.setProperty(name,value)}
 function themeChoice(){
@@ -209,17 +225,7 @@ function renderCount(value){
   var fill=Math.min(value/GOAL_CUPS,1)*100;
   document.getElementById('cupWater').style.setProperty('--fill',fill+'%');
   document.getElementById('waterProgress').textContent=value+' of '+GOAL_CUPS+' cups';
-  var note='Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.';
-  if(value===0){
-    note='Start with your first cup. <strong>8 cups</strong> is a simple daily benchmark.';
-  }else if(value<GOAL_CUPS){
-    note='You are at <strong>'+value+' cups</strong>. '+(GOAL_CUPS-value)+' more to hit the usual daily goal.';
-  }else if(value===GOAL_CUPS){
-    note='You hit <strong>8 cups</strong> today. Nice work keeping your hydration steady.';
-  }else{
-    note='You are at <strong>'+value+' cups</strong>. The cup is full and you are already past the daily benchmark.';
-  }
-  document.getElementById('waterNote').innerHTML=note;
+
 }
 var count=getCount();
 document.getElementById('copyBtn').onclick=copyLink;
@@ -239,6 +245,7 @@ if(window.matchMedia){
 applyEmbedMode();
 applyTheme();
 renderCount(count);
+(function(){function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({widgetHeight:h,src:location.pathname},'*');}sendHeight();new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener('resize',sendHeight);})();
 </script>
 </body>
 </html>
