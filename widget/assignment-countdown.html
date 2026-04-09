@@ -33,12 +33,12 @@
   .embed-mode .widget-grid{max-width:none}
   body.embed-mode{padding:2px}
   .embed-mode .widget-shell{padding:4px;border-radius:10px;box-shadow:none}
-  .add-row{display:flex;gap:4px;margin-bottom:6px}
+  .add-row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr) 42px;gap:4px;margin-bottom:6px;align-items:stretch}
   .add-row input{border:1px solid var(--border);background:var(--bg);color:var(--t1);font:inherit;font-size:11px;padding:5px 8px;border-radius:8px;outline:none}
   .add-row input:focus{border-color:var(--accent)}
-  .add-row input[type="text"]{min-width:0}
-  .add-row input[type="date"]{width:auto}
-  .add-btn{border:1px solid var(--border);background:var(--bg2);color:var(--t1);font:inherit;font-size:11px;padding:5px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .add-row input[type="text"]{min-width:0;width:100%}
+  .add-row input[type="date"]{min-width:0;width:100%}
+  .add-btn{border:1px solid var(--border);background:var(--bg2);color:var(--t1);font:inherit;font-size:11px;padding:0;border-radius:8px;cursor:pointer;white-space:nowrap;display:grid;place-items:center}
   .add-btn:hover{border-color:var(--accent)}
   .list{display:flex;flex-direction:column;gap:3px}
   .item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)}
@@ -85,7 +85,7 @@
   </div>
   <section class="widget-shell">
     <div class="add-row">
-      <input type="text" id="nameInput" placeholder="assignment" maxlength="40" style="width:90px;flex:none">
+      <input type="text" id="nameInput" placeholder="assignment" maxlength="40">
       <input type="date" id="dateInput">
       <button class="add-btn" id="addBtn" type="button">+</button>
     </div>

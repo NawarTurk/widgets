@@ -31,28 +31,26 @@
   .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
   .embed-mode .page-tools{display:none}
   .embed-mode .widget-grid{max-width:none}
-  .water-card{display:flex;flex-direction:column;gap:16px;padding:2px 0 4px}
-  .water-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+  .water-card{display:flex;flex-direction:column;gap:12px;padding:2px 0}
+  .water-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .water-kicker{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
   .water-goal{font-family:'DM Mono',monospace;font-size:12px;color:var(--t2)}
-  .water-stage{display:grid;grid-template-columns:minmax(0,1fr) 70px;align-items:center;gap:16px}
-  .cup-wrap{display:flex;align-items:flex-end;gap:14px;min-width:0}
+  .water-stage{display:grid;grid-template-columns:70px max-content 70px;justify-content:center;align-items:center;gap:12px}
+  .cup-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;grid-column:2}
   .cup{position:relative;width:112px;height:150px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-top:none;border-radius:0 0 28px 28px;background:linear-gradient(180deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08));overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.22)}
   .cup::before{content:'';position:absolute;top:-14px;left:12px;right:12px;height:16px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-bottom:none;border-radius:18px 18px 0 0;background:rgba(255,255,255,0.28)}
   .cup::after{content:'';position:absolute;top:40px;right:-18px;width:24px;height:48px;border:2px solid color-mix(in srgb,var(--accent) 40%, var(--border) 60%);border-left:none;border-radius:0 18px 18px 0;opacity:.9}
   .cup-water{position:absolute;left:0;right:0;bottom:0;height:var(--fill,0%);background:linear-gradient(180deg,#97d5ff 0%,#6bb7ff 45%,#4597ee 100%);transition:height .28s ease}
   .cup-water::before{content:'';position:absolute;top:-9px;left:-2px;right:-2px;height:16px;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,0.62) 0 18%,transparent 19%),linear-gradient(180deg,#c8e8ff,#84c9ff);border-radius:50%}
-  .water-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .water-copy{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
   .water-count{font-family:'DM Mono',monospace;font-size:42px;line-height:1;color:var(--t1)}
   .water-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
   .water-note{font-size:13px;line-height:1.45;color:var(--t2)}
   .water-note strong{color:var(--t1);font-weight:600}
-  .water-controls{display:flex;flex-direction:column;gap:10px}
+  .water-controls{display:flex;flex-direction:column;gap:10px;grid-column:3}
   .water-btn{height:52px;border-radius:18px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg2),color-mix(in srgb,var(--accent-soft) 75%, var(--bg2) 25%));color:var(--t1);font-size:28px;line-height:1;cursor:pointer;transition:transform .1s,border-color .2s,background .2s}
   .water-btn:hover{border-color:var(--accent);background:var(--accent-2)}
   .water-btn:active{transform:scale(.97)}
-  .water-actions{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .water-progress{font-size:11px;color:var(--t2)}
   .reset-btn{background:none;border:none;color:var(--t3);font:inherit;font-size:10px;cursor:pointer}
   .reset-btn:hover{color:var(--t1)}
   @media (max-width:640px){
@@ -61,9 +59,8 @@
     .page-tools{flex-direction:column;align-items:stretch}
     .widget-actions{justify-content:space-between}
     .copy-status{text-align:left}
-    .water-header{align-items:flex-start;flex-direction:column}
-    .water-stage{grid-template-columns:minmax(0,1fr) 56px;gap:10px}
-    .cup-wrap{gap:10px}
+    .water-stage{grid-template-columns:56px max-content 56px;gap:10px}
+    .cup-wrap{gap:8px}
     .water-controls{gap:8px}
     .cup{width:96px;height:136px}
     .water-count{font-size:36px}
@@ -71,12 +68,12 @@
   }
   body.embed-mode{padding:4px}
   .embed-mode .widget-shell{padding:12px 10px;box-shadow:none}
-  .embed-mode .water-card{gap:10px;padding:0}
+  .embed-mode .water-card{gap:8px;padding:0}
   .embed-mode .water-header{gap:6px}
   .embed-mode .water-kicker{font-size:9px}
   .embed-mode .water-goal{font-size:10px}
-  .embed-mode .water-stage{gap:10px}
-  .embed-mode .cup-wrap{gap:10px}
+  .embed-mode .water-stage{grid-template-columns:48px max-content 48px;gap:8px}
+  .embed-mode .cup-wrap{gap:8px}
   .embed-mode .cup{width:72px;height:100px;border-radius:0 0 20px 20px}
   .embed-mode .cup::before{top:-10px;left:8px;right:8px;height:12px;border-radius:14px 14px 0 0}
   .embed-mode .cup::after{top:28px;right:-14px;width:18px;height:36px;border-radius:0 14px 14px 0}
@@ -85,7 +82,6 @@
   .embed-mode .water-note{font-size:11px}
   .embed-mode .water-btn{height:38px;border-radius:14px;font-size:22px}
   .embed-mode .water-controls{gap:6px}
-  .embed-mode .water-actions{gap:8px}
   .embed-mode .water-progress{font-size:10px}
   .embed-mode .reset-btn{font-size:9px}
 </style>
@@ -112,6 +108,7 @@
         <div>
           <div class="water-goal">recommended goal: 8 cups</div>
         </div>
+        <button class="reset-btn" id="resetBtn">reset</button>
       </div>
       <div class="water-stage">
         <div class="cup-wrap">
@@ -127,9 +124,6 @@
           <button class="water-btn" id="plusBtn" aria-label="Increase water count">+</button>
           <button class="water-btn" id="minusBtn" aria-label="Decrease water count">-</button>
         </div>
-      </div>
-      <div class="water-actions">
-        <button class="reset-btn" id="resetBtn">reset</button>
       </div>
     </div>
   </section>
@@ -224,8 +218,6 @@ function renderCount(value){
   document.getElementById('countValue').textContent=String(value);
   var fill=Math.min(value/GOAL_CUPS,1)*100;
   document.getElementById('cupWater').style.setProperty('--fill',fill+'%');
-  document.getElementById('waterProgress').textContent=value+' of '+GOAL_CUPS+' cups';
-
 }
 var count=getCount();
 document.getElementById('copyBtn').onclick=copyLink;

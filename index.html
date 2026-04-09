@@ -13,24 +13,23 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{background:radial-gradient(circle at top,#fefdf8 0,#edf3f1 46%,#dde7e2 100%)}
-  body{font-family:'DM Sans',sans-serif;background:transparent;color:var(--text);padding:24px;-webkit-font-smoothing:antialiased}
-  .page{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);align-items:end;gap:14px;padding:8px 2px 4px}
+  body{font-family:'DM Sans',sans-serif;background:transparent;color:var(--text);padding:18px;-webkit-font-smoothing:antialiased}
+  .page{width:min(100%,1240px);margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .hero{display:grid;grid-template-columns:minmax(0,1fr);align-items:end;gap:10px;padding:2px 0}
   .hero-copy{display:flex;flex-direction:column;gap:6px}
   .title{font-size:clamp(28px,5vw,48px);line-height:.98;font-weight:700;max-width:none}
   .sub{max-width:620px;font-size:14px;line-height:1.5;color:var(--muted)}
   .gallery{display:flex;flex-direction:column;gap:12px}
-  .gallery-row{display:grid;gap:12px;align-items:start}
-  .gallery-row.featured{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .gallery-row.utility{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .gallery-row.lower{grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr)}
-  .card{background:linear-gradient(180deg,var(--panel),rgba(255,255,255,0.72));border:1px solid var(--border);border-radius:24px;padding:10px;display:flex;flex-direction:column;gap:8px;box-shadow:0 16px 40px rgba(32,25,12,0.06)}
-  .card.w-wide{width:480px}
-  .card.w-med{width:340px}
-  .card.w-narrow{width:260px}
-  .gallery-row .card{width:auto;min-width:0;height:max-content}
-  .card-title{font-size:18px;line-height:1.1;font-weight:600}
-  .preview{border-radius:18px;border:1px solid var(--border);background:var(--panel-2);overflow:hidden;position:relative;transition:background .3s,border-color .3s}
+  .note-row{display:flex;justify-content:center;padding:2px 0 4px}
+  .card{background:linear-gradient(180deg,var(--panel),rgba(255,255,255,0.72));border:1px solid var(--border);border-radius:22px;padding:10px;display:flex;flex-direction:column;gap:0;box-shadow:0 16px 40px rgba(32,25,12,0.06)}
+  .card-main{display:grid;grid-template-columns:minmax(240px,360px) minmax(0,1fr);gap:18px;align-items:center}
+  .card.card-compact .card-main{grid-template-columns:minmax(240px,360px) minmax(0,1fr)}
+  .card.card-compact .preview{width:min(78%,260px);justify-self:center}
+  .card-info{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .card-copy{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .card-title{font-size:24px;line-height:1.02;font-weight:600}
+  .card-note{font-size:13px;line-height:1.55;color:var(--muted);max-width:42ch}
+  .preview{border-radius:16px;border:1px solid var(--border);background:var(--panel-2);overflow:hidden;position:relative;transition:background .3s,border-color .3s}
   .card.dark-active{background:linear-gradient(180deg,#252525,#1e1e1e);border-color:rgba(255,255,255,0.08);transition:background .3s,border-color .3s}
   .card.dark-active .card-title{color:#e3e3e1}
   .card.dark-active .preview{background:#191919;border-color:rgba(255,255,255,0.06)}
@@ -40,23 +39,23 @@
   .card.dark-active .copy-status{color:#5a5a5a}
   .preview-frame{display:block;width:100%;border:0;background:#f7f6f3}
   .card.dark-active .preview-frame{background:#191919}
-  .card-tools{display:flex;align-items:center;gap:8px}
-  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,0.72)}
-  .theme-btn{border:none;background:transparent;color:var(--muted);font:inherit;font-size:11px;padding:6px 10px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .card-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:2px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,0.72)}
+  .theme-btn{border:none;background:transparent;color:var(--muted);font:inherit;font-size:11px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
   .theme-btn.active{background:var(--text);color:#fff}
-  .btn{appearance:none;text-decoration:none;background:rgba(255,255,255,0.72);color:var(--text);border:1px solid var(--border);font:inherit;font-size:12px;padding:9px 12px;border-radius:999px;cursor:pointer;transition:transform .1s,background .25s,color .25s,border-color .25s}
+  .btn{appearance:none;text-decoration:none;background:rgba(255,255,255,0.72);color:var(--text);border:1px solid var(--border);font:inherit;font-size:12px;padding:8px 10px;border-radius:999px;cursor:pointer;transition:transform .1s,background .25s,color .25s,border-color .25s}
   .btn:hover{transform:translateY(-1px);border-color:var(--soft)}
   .btn.copied{background:#2d3748;color:#fff;border-color:#2d3748}
   .card.dark-active .btn{background:rgba(255,255,255,0.08);color:#e3e3e1;border-color:rgba(255,255,255,0.1)}
   .card.dark-active .btn.copied{background:#6bb7ff;color:#191919;border-color:#6bb7ff}
-  .copy-status{font-size:11px;color:var(--soft);min-width:48px}
+  .copy-status{font-size:11px;color:var(--soft);min-width:0}
   .footer-note{text-align:center;font-size:13px;line-height:1.5;color:var(--muted);padding:12px 0 4px}
   .footer-note a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
-  .bubble{display:block;justify-self:end;max-width:360px;background:#fff;border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--muted);box-shadow:0 2px 8px rgba(32,25,12,0.06)}
+  .bubble{display:block;max-width:min(100%,22rem);background:#fff;border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:13px;line-height:1.5;color:var(--muted);box-shadow:0 2px 8px rgba(32,25,12,0.06)}
   .bubble a{color:var(--text);text-decoration:underline;text-underline-offset:2px}
-  @media (max-width:1080px){.gallery-row.utility,.gallery-row.lower{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:760px){.hero{grid-template-columns:1fr}.bubble{justify-self:start;max-width:none}.gallery-row.featured,.gallery-row.utility,.gallery-row.lower{grid-template-columns:1fr}}
-  @media (max-width:640px){body{padding:16px}.card{padding:16px}}
+  @media (max-width:900px){.card-main,.card.card-compact .card-main{grid-template-columns:1fr}}
+  @media (max-width:760px){.bubble{max-width:none}}
+  @media (max-width:640px){body{padding:12px}.card{padding:8px}.card-title{font-size:21px}}
 </style>
 </head>
 <body>
@@ -66,113 +65,158 @@
       <h1 class="title">Trust The Process</h1>
       <p class="sub">Pick a widget, copy the link, embed it in Notion.</p>
     </div>
-    <div class="bubble">👋 Hey, this is Nawar.<br>If you have feedback or a widget you'd like to see here, let me know<br><a href="https://www.linkedin.com/in/nawart/" target="_blank" rel="noopener">linkedin.com/in/nawart</a></div>
   </header>
   <section class="gallery">
-    <div class="gallery-row featured">
-      <article class="card w-wide">
-        <h2 class="card-title">Habit Tracker</h2>
+    <div class="note-row">
+      <div class="bubble">👋 Hey, this is Nawar.<br>If you have feedback or a widget you'd like to see here, let me know<br><a href="https://www.linkedin.com/in/nawart/" target="_blank" rel="noopener">linkedin.com/in/nawart</a></div>
+    </div>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame habit" data-preview="widget/habit-tracker.html" src="widget/habit-tracker.html?embed=1&theme=light" title="Habit tracker preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/habit-tracker.html">
-            <button class="theme-btn active" type="button" data-path="widget/habit-tracker.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/habit-tracker.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Habit Tracker</h2>
+            <p class="card-note">Track your week in one glance, mark habits day by day, and keep the progress chart visible without opening a full app.</p>
           </div>
-          <button class="btn" data-copy-path="widget/habit-tracker.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/habit-tracker.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/habit-tracker.html">
+              <button class="theme-btn active" type="button" data-path="widget/habit-tracker.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/habit-tracker.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/habit-tracker.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/habit-tracker.html"></span>
+          </div>
         </div>
-      </article>
-      <article class="card w-wide">
-        <h2 class="card-title">Study Focus</h2>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame study" data-preview="widget/study-focus.html" src="widget/study-focus.html?embed=1&theme=light" title="Study focus preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/study-focus.html">
-            <button class="theme-btn active" type="button" data-path="widget/study-focus.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/study-focus.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Study Focus</h2>
+            <p class="card-note">A calm focus timer with built-in study ambience, designed for longer sessions when you want one clean workspace.</p>
           </div>
-          <button class="btn" data-copy-path="widget/study-focus.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/study-focus.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/study-focus.html">
+              <button class="theme-btn active" type="button" data-path="widget/study-focus.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/study-focus.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/study-focus.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/study-focus.html"></span>
+          </div>
         </div>
-      </article>
-    </div>
-    <div class="gallery-row utility">
-      <article class="card w-med">
-        <h2 class="card-title">Pomodoro Timer</h2>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame pomodoro" data-preview="widget/pomodoro-counter.html" src="widget/pomodoro-counter.html?embed=1&theme=light" title="Pomodoro timer preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/pomodoro-counter.html">
-            <button class="theme-btn active" type="button" data-path="widget/pomodoro-counter.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/pomodoro-counter.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Pomodoro Timer</h2>
+            <p class="card-note">Preset or custom focus sprints with a minimal countdown so you can start work blocks quickly and stay on rhythm.</p>
           </div>
-          <button class="btn" data-copy-path="widget/pomodoro-counter.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/pomodoro-counter.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/pomodoro-counter.html">
+              <button class="theme-btn active" type="button" data-path="widget/pomodoro-counter.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/pomodoro-counter.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/pomodoro-counter.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/pomodoro-counter.html"></span>
+          </div>
         </div>
-      </article>
-      <article class="card w-narrow">
-        <h2 class="card-title">Water Counter</h2>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame water" data-preview="widget/water-counter.html" src="widget/water-counter.html?embed=1&theme=light" title="Water counter preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/water-counter.html">
-            <button class="theme-btn active" type="button" data-path="widget/water-counter.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/water-counter.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Water Counter</h2>
+            <p class="card-note">Log cups through the day with a visual fill level, quick plus and minus controls, and a reset that stays out of the way.</p>
           </div>
-          <button class="btn" data-copy-path="widget/water-counter.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/water-counter.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/water-counter.html">
+              <button class="theme-btn active" type="button" data-path="widget/water-counter.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/water-counter.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/water-counter.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/water-counter.html"></span>
+          </div>
         </div>
-      </article>
-      <article class="card w-narrow">
-        <h2 class="card-title">Assignment Countdown</h2>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame assignments" data-preview="widget/assignment-countdown.html" src="widget/assignment-countdown.html?embed=1&theme=light" title="Assignment countdown preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/assignment-countdown.html">
-            <button class="theme-btn active" type="button" data-path="widget/assignment-countdown.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/assignment-countdown.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Assignment Countdown</h2>
+            <p class="card-note">Keep deadlines visible with a compact due-date list that helps you spot what matters next before it sneaks up on you.</p>
           </div>
-          <button class="btn" data-copy-path="widget/assignment-countdown.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/assignment-countdown.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/assignment-countdown.html">
+              <button class="theme-btn active" type="button" data-path="widget/assignment-countdown.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/assignment-countdown.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/assignment-countdown.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/assignment-countdown.html"></span>
+          </div>
         </div>
-      </article>
-    </div>
-    <div class="gallery-row lower">
-      <article class="card w-wide">
-        <h2 class="card-title">LeetCode Counter</h2>
+      </div>
+    </article>
+    <article class="card card-compact">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame leetcode" data-preview="widget/leetcode-counter.html" src="widget/leetcode-counter.html?embed=1&theme=light" title="LeetCode counter preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/leetcode-counter.html">
-            <button class="theme-btn active" type="button" data-path="widget/leetcode-counter.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/leetcode-counter.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">LeetCode Counter</h2>
+            <p class="card-note">A tiny running log for easy, medium, and hard solves so your daily coding streak stays visible without taking over the page.</p>
           </div>
-          <button class="btn" data-copy-path="widget/leetcode-counter.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/leetcode-counter.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/leetcode-counter.html">
+              <button class="theme-btn active" type="button" data-path="widget/leetcode-counter.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/leetcode-counter.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/leetcode-counter.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/leetcode-counter.html"></span>
+          </div>
         </div>
-      </article>
-      <article class="card w-med">
-        <h2 class="card-title">Trust The Process</h2>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-main">
         <div class="preview">
           <iframe class="preview-frame quote" data-preview="widget/quote-of-the-day.html" src="widget/quote-of-the-day.html?embed=1&theme=light" title="Quote widget preview" loading="lazy"></iframe>
         </div>
-        <div class="card-tools">
-          <div class="theme-toggle" data-theme-toggle="widget/quote-of-the-day.html">
-            <button class="theme-btn active" type="button" data-path="widget/quote-of-the-day.html" data-theme="light">light</button>
-            <button class="theme-btn" type="button" data-path="widget/quote-of-the-day.html" data-theme="dark">dark</button>
+        <div class="card-info">
+          <div class="card-copy">
+            <h2 class="card-title">Quote of the Day</h2>
+            <p class="card-note">A quiet daily reminder card that keeps one strong line in view when you want motivation without extra visual noise.</p>
           </div>
-          <button class="btn" data-copy-path="widget/quote-of-the-day.html">Copy link</button>
-          <span class="copy-status" data-copy-status="widget/quote-of-the-day.html"></span>
+          <div class="card-tools">
+            <div class="theme-toggle" data-theme-toggle="widget/quote-of-the-day.html">
+              <button class="theme-btn active" type="button" data-path="widget/quote-of-the-day.html" data-theme="light">light</button>
+              <button class="theme-btn" type="button" data-path="widget/quote-of-the-day.html" data-theme="dark">dark</button>
+            </div>
+            <button class="btn" data-copy-path="widget/quote-of-the-day.html">Copy link</button>
+            <span class="copy-status" data-copy-status="widget/quote-of-the-day.html"></span>
+          </div>
         </div>
-      </article>
-    </div>
+      </div>
+    </article>
   </section>
 </main>
 <script>

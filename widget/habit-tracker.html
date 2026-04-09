@@ -42,13 +42,12 @@
   .chart-box svg{position:absolute;top:0;left:0;width:100%;height:100%}
 
   table{width:100%;border-collapse:collapse;table-layout:fixed}
-  col.c0{width:18%}col.c8{width:56px}
+  col.c0{width:28%}col.c8{width:56px}
   th,td{padding:5px 1px;text-align:center;font-size:11px;border-bottom:1px solid var(--border)}
   th{color:var(--t3);font-weight:500;font-size:9px;text-transform:uppercase;letter-spacing:.3px}
   th:first-child,td:first-child{text-align:left;padding-left:4px}
-  th.today{color:var(--accent)}
 
-  .ni{background:transparent;border:none;font-family:inherit;font-size:11px;width:100%;outline:none;padding:1px 0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+  .ni{background:transparent;border:none;font-family:inherit;font-size:11px;width:100%;outline:none;padding:1px 0;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;color:var(--t1) !important}
   .ni:focus{border-bottom:1px solid var(--accent)}
   .cell{width:22px;height:22px;border-radius:5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .1s,background .12s;border:1px solid var(--neu-b);background:var(--neu)}
   .cell:active{transform:scale(.85)}
@@ -126,12 +125,9 @@
 
 <script>
 var D=['Sa','Su','Mo','Tu','We','Th','Fr'];
-var DAY_MAP=[1,2,3,4,5,6,0];
-var TI=DAY_MAP[new Date().getDay()];
 var H,G;
-var CHART_H=120;
 var PAD_TOP=14;
-var PAD_BOT=4;
+var PAD_BOT=12;
 var STORAGE_H='habit_tracker_h';
 var STORAGE_G='habit_tracker_g';
 var SELECTED_THEME='light';
@@ -270,7 +266,7 @@ function copyLink(){
 
 function renderTable(){
   var s='<thead><tr><th id="th-h"></th>';
-  for(var i=0;i<7;i++)s+='<th id="th-'+i+'"'+(i===TI?' class="today"':'')+'>'+D[i]+'</th>';
+  for(var i=0;i<7;i++)s+='<th id="th-'+i+'">'+D[i]+'</th>';
   s+='<th id="th-p" style="font-size:7px"></th></tr></thead><tbody>';
 
   for(var hi=0;hi<H.length;hi++){
@@ -306,6 +302,7 @@ function renderChart(){
   var avg=weekAvg();
   var box=document.getElementById('chartBox');
   var boxRect=box.getBoundingClientRect();
+  var chartHeight=boxRect.height;
 
   var xs=[];
   for(var i=0;i<7;i++){
@@ -323,14 +320,14 @@ function renderChart(){
   var avgWidth=progRect.width;
   var avgCenterX=avgLeft+avgWidth/2;
 
-  function yPos(pct){return PAD_TOP+(1-pct/100)*(CHART_H-PAD_TOP-PAD_BOT);}
+  function yPos(pct){return PAD_TOP+(1-pct/100)*(chartHeight-PAD_TOP-PAD_BOT);}
 
   var pts=[];
   for(var i=0;i<7;i++)pts.push({x:xs[i],y:yPos(p[i])});
 
   var pathD='',fillD='';
   for(var i=0;i<pts.length;i++)pathD+=(i===0?'M':'L')+pts[i].x.toFixed(1)+','+pts[i].y.toFixed(1);
-  fillD=pathD+'L'+pts[6].x.toFixed(1)+','+CHART_H+'L'+pts[0].x.toFixed(1)+','+CHART_H+'Z';
+  fillD=pathD+'L'+pts[6].x.toFixed(1)+','+chartHeight+'L'+pts[0].x.toFixed(1)+','+chartHeight+'Z';
 
   var gridLeft=xs[0]-10;
   var gridRight=xs[6]+10;
@@ -342,25 +339,20 @@ function renderChart(){
 
   var circles='';
   for(var i=0;i<pts.length;i++){
-    var rad=i===TI?6:4;
-    var fill=i===TI?ACTIVE_THEME.accent:ACTIVE_THEME.green;
-    circles+='<circle cx="'+pts[i].x.toFixed(1)+'" cy="'+pts[i].y.toFixed(1)+'" r="'+rad+'" fill="'+fill+'" stroke="'+ACTIVE_THEME.pageBg+'" stroke-width="2"/>';
-    var lblY=pts[i].y-10;
-    if(lblY<12)lblY=pts[i].y+14;
-    circles+='<text x="'+pts[i].x.toFixed(1)+'" y="'+lblY+'" text-anchor="middle" fill="'+(i===TI?ACTIVE_THEME.accent:ACTIVE_THEME.t3)+'" font-size="8" font-family="DM Sans">'+p[i]+'%</text>';
+    circles+='<circle cx="'+pts[i].x.toFixed(1)+'" cy="'+pts[i].y.toFixed(1)+'" r="4" fill="'+ACTIVE_THEME.green+'" stroke="'+ACTIVE_THEME.pageBg+'" stroke-width="2"/>';
   }
 
   var yLabels='';
   var ySteps=[0,25,50,75,100];
   for(var i=0;i<ySteps.length;i++){
     var ly=yPos(ySteps[i]);
-    yLabels+='<text x="'+(yAxisRight-4)+'" y="'+(ly+3)+'" text-anchor="end" fill="'+ACTIVE_THEME.t3+'" font-size="9" font-family="DM Sans">'+ySteps[i]+'%</text>';
+    yLabels+='<text x="'+(yAxisRight-4)+'" y="'+ly.toFixed(1)+'" text-anchor="end" dominant-baseline="middle" fill="'+ACTIVE_THEME.t3+'" font-size="9" font-family="DM Sans">'+ySteps[i]+'%</text>';
   }
 
   var acol=avgColor(avg);
   var avLabel=avg>=0?avg+'%':'--';
-  var avgSvg='<text x="'+avgCenterX.toFixed(1)+'" y="'+(CHART_H/2+2)+'" text-anchor="middle" dominant-baseline="middle" fill="'+acol+'" font-size="24" font-family="DM Mono,monospace" font-weight="500">'+avLabel+'</text>';
-  avgSvg+='<text x="'+avgCenterX.toFixed(1)+'" y="'+(CHART_H/2+18)+'" text-anchor="middle" fill="'+ACTIVE_THEME.t3+'" font-size="7" font-family="DM Sans">AVG</text>';
+  var avgSvg='<text x="'+avgCenterX.toFixed(1)+'" y="'+(chartHeight/2+2)+'" text-anchor="middle" dominant-baseline="middle" fill="'+acol+'" font-size="24" font-family="DM Mono,monospace" font-weight="500">'+avLabel+'</text>';
+  avgSvg+='<text x="'+avgCenterX.toFixed(1)+'" y="'+(chartHeight/2+18)+'" text-anchor="middle" fill="'+ACTIVE_THEME.t3+'" font-size="7" font-family="DM Sans">AVG</text>';
 
   document.getElementById('chartSvg').innerHTML=gridlines
     +'<path d="'+fillD+'" fill="'+ACTIVE_THEME.areaFill+'"/>'

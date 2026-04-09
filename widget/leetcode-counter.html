@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LeetCode Counter</title>
+<script>
+(function(){
+  try{
+    var params=new URLSearchParams(window.location.search);
+    if(params.get('embed')==='1'||params.get('embed')==='true'||window.self!==window.top){
+      document.documentElement.classList.add('embed-mode');
+    }
+  }catch(e){
+    document.documentElement.classList.add('embed-mode');
+  }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -14,68 +26,52 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{background:var(--page-bg)}
-  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  .widget-grid{max-width:860px;margin:0 auto}
-  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-  .widget-shell{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(15,15,15,0.04)}
-  .widget-meta{display:flex;flex-direction:column;gap:4px;min-width:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--page-bg);color:var(--t1);padding:8px;-webkit-font-smoothing:antialiased;overflow:hidden}
+  .widget-grid{display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:100%;margin:0 auto}
+  .page-tools{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .widget-shell{display:flex;align-items:stretch;gap:1px;width:100%}
+  .widget-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
   .widget-title{font-size:16px;line-height:1.2;font-weight:600;color:var(--t1)}
   .widget-sub{font-size:11px;line-height:1.45;color:var(--t2);max-width:34ch}
   .widget-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
+  .theme-toggle{display:inline-flex;align-items:center;gap:3px;padding:2px;border:1px solid var(--border);border-radius:999px;background:var(--bg2)}
   .theme-btn{border:none;background:transparent;color:var(--t2);font:inherit;font-size:10px;padding:5px 9px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
   .theme-btn.active{background:var(--bg);color:var(--t1);box-shadow:0 1px 2px rgba(15,15,15,0.08)}
   .copy-btn{background:var(--bg2);border:1px solid var(--border);color:var(--t1);font:inherit;font-size:11px;padding:7px 10px;border-radius:999px;cursor:pointer;transition:background .2s,border-color .2s,transform .1s}
   .copy-btn:hover{border-color:var(--accent);background:color-mix(in srgb,var(--bg2) 84%, var(--accent) 16%)}
   .copy-btn:active{transform:scale(.98)}
-  .copy-status{font-size:10px;color:var(--t3);min-width:48px;text-align:right}
+  .copy-status{font-size:10px;color:var(--t3);min-width:0;text-align:right}
   .embed-mode .page-tools{display:none}
-  .embed-mode .widget-grid{max-width:none}
-  body.embed-mode{padding:0}
-  .stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-  .row{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg),var(--bg2));min-width:0}
-  .row-copy{display:flex;align-items:center;gap:8px;min-width:0}
-  .badge{width:10px;height:10px;border-radius:999px;flex-shrink:0}
+  .embed-mode .widget-grid{display:block;width:100%;max-width:none;margin:0}
+  html.embed-mode,html.embed-mode body,body.embed-mode{background:transparent}
+  html.embed-mode body,body.embed-mode{display:block;padding:0;width:100%;height:auto;min-height:0;min-width:0}
+  .stack{display:flex;flex-direction:column;align-items:stretch;gap:1px;width:100%}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px;padding:2px 4px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);min-width:0;width:100%}
+  .row-copy{display:flex;align-items:center;gap:3px;justify-content:center;white-space:nowrap;min-width:0;width:100%}
+  .badge{width:5px;height:5px;border-radius:999px;flex-shrink:0}
   .badge.easy{background:var(--easy)}
   .badge.medium{background:var(--medium)}
   .badge.hard{background:var(--hard)}
-  .row-title{font-size:13px;font-weight:600;color:var(--t1)}
-  .row-sub{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
-  .row-controls{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .count{font-family:'DM Mono',monospace;font-size:26px;line-height:1;color:var(--t1);min-width:2ch;text-align:center}
-  .controls{display:flex;gap:6px;flex-shrink:0}
-  .btn-small{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--t1);font-size:20px;cursor:pointer;transition:transform .1s,border-color .2s,background .2s}
+  .row-title{font-size:9px;font-weight:600;color:var(--t1);letter-spacing:.03em;text-transform:uppercase}
+  .count{font-family:'DM Mono',monospace;font-size:20px;line-height:1;color:var(--t1);text-align:center;min-width:2ch}
+  .controls{display:flex;flex-direction:column;gap:1px;justify-content:center}
+  .btn-small{width:14px;height:14px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--t1);font-size:7px;cursor:pointer;display:grid;place-items:center;transition:transform .1s,border-color .2s,background .2s;line-height:1}
   .btn-small:hover{border-color:var(--accent);background:var(--bg2)}
-  .btn-small:active{transform:scale(.97)}
-  .footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
-  .total{font-size:11px;color:var(--t2)}
-  .reset-btn{background:none;border:none;color:var(--t3);font:inherit;font-size:10px;cursor:pointer}
-  .reset-btn:hover{color:var(--t1)}
-  .embed-mode .widget-shell{padding:10px 8px;border-radius:16px}
-  .embed-mode .stack{gap:4px}
-  .embed-mode .row{gap:6px;padding:8px 6px;border-radius:14px}
-  .embed-mode .row-copy{gap:6px}
-  .embed-mode .badge{width:9px;height:9px}
-  .embed-mode .row-title{font-size:11px}
-  .embed-mode .row-sub{font-size:8px;letter-spacing:.07em}
-  .embed-mode .count{font-size:20px}
-  .embed-mode .controls{gap:4px}
-  .embed-mode .btn-small{width:28px;height:28px;border-radius:10px;font-size:18px}
-  .embed-mode .footer{margin-top:8px}
-  .embed-mode .total,.embed-mode .reset-btn{font-size:9px}
+  .btn-small:active{transform:scale(.95)}
+  .embed-mode .widget-shell{gap:0}
+  .embed-mode .stack{gap:1px}
+  .embed-mode .row{gap:3px;padding:2px 3px;border-radius:5px;width:100%}
+  .embed-mode .row-copy{gap:2px}
+  .embed-mode .badge{width:4px;height:4px}
+  .embed-mode .row-title{font-size:9px}
+  .embed-mode .count{font-size:18px}
+  .embed-mode .controls{gap:1px}
+  .embed-mode .btn-small{width:12px;height:12px;font-size:7px}
   @media (max-width:640px){
-    body{padding:10px}
-    .widget-shell{padding:14px 12px}
+    body{padding:6px}
     .page-tools{flex-direction:column;align-items:stretch}
     .widget-actions{justify-content:space-between}
     .copy-status{text-align:left}
-    .stack{grid-template-columns:1fr}
-    .row{gap:10px}
-    .embed-mode .stack{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .embed-mode .row{gap:8px;padding:9px 7px}
-  }
-  @media (max-width:430px){
-    .embed-mode .stack{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -98,57 +94,29 @@
   <section class="widget-shell">
     <div class="stack">
       <div class="row" data-key="easy">
-        <div class="row-copy">
-          <span class="badge easy"></span>
-          <div>
-            <div class="row-title">Easy</div>
-            <div class="row-sub">Warm up</div>
-          </div>
-        </div>
-        <div class="row-controls">
-          <div class="count" data-count="easy">0</div>
-          <div class="controls">
-            <button class="btn-small" type="button" data-action="decrease" data-key="easy" aria-label="Decrease easy count">-</button>
-            <button class="btn-small" type="button" data-action="increase" data-key="easy" aria-label="Increase easy count">+</button>
-          </div>
+        <div class="row-copy"><span class="badge easy"></span><div class="row-title">Easy</div></div>
+        <div class="count" data-count="easy">0</div>
+        <div class="controls">
+          <button class="btn-small" type="button" data-action="increase" data-key="easy" aria-label="Increase easy count">↑</button>
+          <button class="btn-small" type="button" data-action="decrease" data-key="easy" aria-label="Decrease easy count">↓</button>
         </div>
       </div>
       <div class="row" data-key="medium">
-        <div class="row-copy">
-          <span class="badge medium"></span>
-          <div>
-            <div class="row-title">Medium</div>
-            <div class="row-sub">Main work</div>
-          </div>
-        </div>
-        <div class="row-controls">
-          <div class="count" data-count="medium">0</div>
-          <div class="controls">
-            <button class="btn-small" type="button" data-action="decrease" data-key="medium" aria-label="Decrease medium count">-</button>
-            <button class="btn-small" type="button" data-action="increase" data-key="medium" aria-label="Increase medium count">+</button>
-          </div>
+        <div class="row-copy"><span class="badge medium"></span><div class="row-title">Medium</div></div>
+        <div class="count" data-count="medium">0</div>
+        <div class="controls">
+          <button class="btn-small" type="button" data-action="increase" data-key="medium" aria-label="Increase medium count">↑</button>
+          <button class="btn-small" type="button" data-action="decrease" data-key="medium" aria-label="Decrease medium count">↓</button>
         </div>
       </div>
       <div class="row" data-key="hard">
-        <div class="row-copy">
-          <span class="badge hard"></span>
-          <div>
-            <div class="row-title">Hard</div>
-            <div class="row-sub">Stretch</div>
-          </div>
-        </div>
-        <div class="row-controls">
-          <div class="count" data-count="hard">0</div>
-          <div class="controls">
-            <button class="btn-small" type="button" data-action="decrease" data-key="hard" aria-label="Decrease hard count">-</button>
-            <button class="btn-small" type="button" data-action="increase" data-key="hard" aria-label="Increase hard count">+</button>
-          </div>
+        <div class="row-copy"><span class="badge hard"></span><div class="row-title">Hard</div></div>
+        <div class="count" data-count="hard">0</div>
+        <div class="controls">
+          <button class="btn-small" type="button" data-action="increase" data-key="hard" aria-label="Increase hard count">↑</button>
+          <button class="btn-small" type="button" data-action="decrease" data-key="hard" aria-label="Decrease hard count">↓</button>
         </div>
       </div>
-    </div>
-    <div class="footer">
-      <div class="total" id="totalCount">total solved: 0</div>
-      <button class="reset-btn" type="button" id="resetBtn">reset</button>
     </div>
   </section>
 </main>
@@ -196,7 +164,10 @@ function isEmbedMode(){
   try{return window.self!==window.top;}catch(e){return true;}
 }
 function applyEmbedMode(){
-  if(isEmbedMode())document.body.classList.add('embed-mode');
+  if(isEmbedMode()){
+    document.documentElement.classList.add('embed-mode');
+    document.body.classList.add('embed-mode');
+  }
 }
 function copyStatus(msg){
   var el=document.getElementById('copyStatus');
@@ -248,7 +219,6 @@ function render(){
     var node=document.querySelector('[data-count="'+key+'"]');
     if(node)node.textContent=String(counts[key]);
   });
-  document.getElementById('totalCount').textContent='total solved: '+(counts.easy+counts.medium+counts.hard);
 }
 document.getElementById('copyBtn').onclick=copyLink;
 document.querySelectorAll('.theme-btn').forEach(function(btn){
@@ -266,18 +236,32 @@ document.querySelectorAll('[data-action]').forEach(function(btn){
     render();
   };
 });
-document.getElementById('resetBtn').onclick=function(){
-  counts={easy:0,medium:0,hard:0};
-  setCounts();
-  render();
-};
 if(window.matchMedia){
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(!new URLSearchParams(window.location.search).get('theme'))applyTheme()});
 }
 applyEmbedMode();
 applyTheme();
 render();
-(function(){function sendHeight(){var h=document.documentElement.scrollHeight;window.parent.postMessage({widgetHeight:h,src:location.pathname},'*');}sendHeight();new MutationObserver(sendHeight).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener('resize',sendHeight);})();
+(function(){
+  function syncEmbedSize(){
+    var root=document.querySelector('.widget-shell')||document.querySelector('.widget-grid')||document.body;
+    var box=root.getBoundingClientRect();
+    var height=Math.ceil(box.height);
+    if(document.body.classList.contains('embed-mode')){
+      document.documentElement.style.height=height+'px';
+      document.documentElement.style.minHeight='0';
+      document.body.style.height=height+'px';
+      document.body.style.minHeight='0';
+    }
+    window.parent.postMessage({widgetHeight:height,src:location.pathname},'*');
+  }
+  syncEmbedSize();
+  new MutationObserver(syncEmbedSize).observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true});
+  if(window.ResizeObserver){new ResizeObserver(syncEmbedSize).observe(document.body);}
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(syncEmbedSize);}
+  window.addEventListener('load',syncEmbedSize);
+  window.addEventListener('resize',syncEmbedSize);
+})();
 </script>
 </body>
 </html>

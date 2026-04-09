@@ -33,14 +33,10 @@
   .embed-mode .page-tools{display:none}
   .embed-mode .widget-grid{max-width:none}
   .quote-card{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
-  .quote-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-  .quote-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+  .quote-top{display:flex;align-items:flex-start;justify-content:flex-end;gap:12px}
   .quote-mark{font-family:'Cormorant Garamond',serif;font-size:88px;line-height:.8;color:var(--accent);margin-top:-8px}
   .quote-text{font-family:'Cormorant Garamond',serif;font-size:34px;line-height:1.02;letter-spacing:-.02em;max-width:12ch;color:var(--t1)}
   .quote-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .quote-author{display:flex;flex-direction:column;gap:3px}
-  .quote-author strong{font-size:12px;font-weight:600;color:var(--t1)}
-  .quote-author span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
   .quote-actions{margin-left:auto;display:flex;align-items:flex-end}
   .next-btn.small{font-size:10px;padding:5px 9px;opacity:.9}
   @media (max-width:640px){
@@ -57,9 +53,6 @@
   .embed-mode .quote-card{gap:8px}
   .embed-mode .quote-mark{font-size:60px}
   .embed-mode .quote-text{font-size:24px}
-  .embed-mode .quote-label{font-size:9px}
-  .embed-mode .quote-author strong{font-size:11px}
-  .embed-mode .quote-author span{font-size:9px}
   .embed-mode .next-btn.small{font-size:9px;padding:4px 8px}
 </style>
 </head>
@@ -67,7 +60,7 @@
 <main class="widget-grid">
   <div class="page-tools">
     <div class="widget-meta">
-      <h1 class="widget-title">Trust The Process</h1>
+      <h1 class="widget-title">Quote Of The Day</h1>
       <p class="widget-sub">Daily motivational quote.</p>
     </div>
     <div class="widget-actions">
@@ -82,15 +75,10 @@
   <section class="widget-shell">
     <div class="quote-card">
       <div class="quote-top">
-        <div class="quote-label">Trust The Process</div>
         <div class="quote-mark">“</div>
       </div>
       <div class="quote-text" id="quoteText">Loading quote...</div>
       <div class="quote-footer">
-        <div class="quote-author">
-          <strong id="quoteAuthor">Trust The Process</strong>
-          <span>daily focus</span>
-        </div>
         <div class="quote-actions">
           <button class="next-btn small" id="nextBtn" type="button">next quote</button>
         </div>
@@ -194,7 +182,6 @@ function dailyIndex(size){
 function renderQuote(){
   var quote=quotes[quoteIndex]||QUOTES_FALLBACK[0];
   document.getElementById('quoteText').textContent=quote.text;
-  document.getElementById('quoteAuthor').textContent=quote.author||'Trust The Process';
 }
 function nextQuote(){
   quoteIndex=(quoteIndex+1)%quotes.length;
