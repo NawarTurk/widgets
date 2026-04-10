@@ -33,12 +33,17 @@
   .embed-mode .widget-grid{max-width:none}
   body.embed-mode{padding:2px}
   .embed-mode .widget-shell{padding:4px;border-radius:10px;box-shadow:none}
-  .add-row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr) 42px;gap:4px;margin-bottom:6px;align-items:stretch}
+  .add-row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);gap:4px;margin-bottom:6px;align-items:stretch}
   .add-row input{border:1px solid var(--border);background:var(--bg);color:var(--t1);font:inherit;font-size:11px;padding:5px 8px;border-radius:8px;outline:none}
   .add-row input:focus{border-color:var(--accent)}
   .add-row input[type="text"]{min-width:0;width:100%}
   .add-row input[type="date"]{min-width:0;width:100%}
-  .add-btn{border:1px solid var(--border);background:var(--bg2);color:var(--t1);font:inherit;font-size:11px;padding:0;border-radius:8px;cursor:pointer;white-space:nowrap;display:grid;place-items:center}
+  .date-field{position:relative;min-width:0}
+  .date-field input{padding-left:28px}
+  .date-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);display:grid;place-items:center;color:var(--t2);pointer-events:none}
+  .date-icon svg{display:block;width:13px;height:13px;stroke:currentColor}
+  .action-row{display:flex;justify-content:center;margin-top:6px}
+  .add-btn{border:1px solid var(--border);background:var(--bg2);color:var(--t1);font:inherit;font-size:11px;padding:6px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;min-width:96px}
   .add-btn:hover{border-color:var(--accent)}
   .list{display:flex;flex-direction:column;gap:3px}
   .item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:var(--bg2);border:1px solid var(--border)}
@@ -53,7 +58,11 @@
   .item-del:hover{color:var(--red)}
   .empty{font-size:11px;color:var(--t3);text-align:center;padding:6px 0}
   .embed-mode .add-row input{font-size:10px;padding:4px 6px;border-radius:6px}
-  .embed-mode .add-btn{font-size:10px;padding:4px 8px;border-radius:6px}
+  .embed-mode .date-field input{padding-left:24px}
+  .embed-mode .date-icon{left:7px}
+  .embed-mode .date-icon svg{width:12px;height:12px}
+  .embed-mode .action-row{margin-top:4px}
+  .embed-mode .add-btn{font-size:10px;padding:5px 12px;border-radius:999px;min-width:84px}
   .embed-mode .item{padding:4px 6px;gap:6px;border-radius:8px}
   .embed-mode .item-name{font-size:10px}
   .embed-mode .item-time{font-size:9px}
@@ -86,10 +95,22 @@
   <section class="widget-shell">
     <div class="add-row">
       <input type="text" id="nameInput" placeholder="assignment" maxlength="40">
-      <input type="date" id="dateInput">
-      <button class="add-btn" id="addBtn" type="button">+</button>
+      <div class="date-field">
+        <span class="date-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+            <path d="M16 3v4"></path>
+            <path d="M8 3v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+        </span>
+        <input type="date" id="dateInput">
+      </div>
     </div>
     <div class="list" id="list"></div>
+    <div class="action-row">
+      <button class="add-btn" id="addBtn" type="button">add</button>
+    </div>
   </section>
 </main>
 <script>
